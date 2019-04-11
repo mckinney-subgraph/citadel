@@ -1,0 +1,13 @@
+[Unit]
+Description=Session Switcher
+After=accounts-daemon.service
+Wants=accounts-daemon.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/bin/sh -c 'for arg in `cat /proc/cmdline`; do case $arg in sway) /usr/bin/busctl call org.freedesktop.Accounts /org/freedesktop/Accounts/User1000 org.freedesktop.Accounts.User SetXSession s "sway"; esac; done'
+
+[Install]
+WantedBy=graphical.target
+

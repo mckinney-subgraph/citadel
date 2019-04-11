@@ -47,6 +47,7 @@ SRC_URI = "\
     file://iptables-flush.sh \
     file://systemd/zram-swap.service \
     file://systemd/iptables.service \
+    file://systemd/session-switcher.service \
     file://skel/profile \
     file://skel/bashrc \
     file://skel/vimrc \
@@ -68,7 +69,7 @@ RDEPENDS_${PN} = "bash"
 
 inherit allarch systemd useradd
 
-SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path iptables.service"
+SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path iptables.service session-switcher.service"
 
 do_install() {
     install -m 0755 -d ${D}/storage
@@ -96,6 +97,8 @@ do_install() {
     install -d ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/zram-swap.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/iptables.service ${D}${systemd_system_unitdir}
+
+    install -m 644 ${WORKDIR}/systemd/session-switcher.service ${D}${systemd_system_unitdir}
 
     install -m 644 ${WORKDIR}/systemd/watch-run-user.path ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/watch-run-user.service ${D}${systemd_system_unitdir}
