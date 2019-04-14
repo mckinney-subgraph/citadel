@@ -16,15 +16,15 @@ set $up k
 set $right l
 
 # Your preferred terminal emulator - script command to appease pty requirement of machinectl
-set $term /usr/bin/sgmenu -c '/usr/bin/realms run -- gnome-terminal'
+set $term /usr/libexec/citadel-run gnome-terminal
 set $citadelterm gnome-terminal
-set $filemanager /usr/bin/sgmenu -c '/usr/bin/realms run -- nautilus'
+set $filemanager /usr/libexec/citadel-run nautilus
 set $lockscreen swaylock --scaling=fill -i /usr/share/backgrounds/gnome/adwaita-morning.jpg
-set $screenshot grim /home/citadel/`date +'%Y-%m-%d-%H%M%S_screenshot.png'`
+set $screenshot grim /storage/realms/Shared/`date +'%Y-%m-%d-%H%M%S_screenshot.png'`
 set $screenshot_region slurp | grim -g - /home/citadel/`date +'%Y-%m-%d-%H%M%S_screenshot.png'`
 
 # Your preferred application launcher
-set $menu /usr/bin/sgmenu -d
+set $menu /usr/bin/sgflow
 
 ### Output configuration
 #
@@ -68,7 +68,6 @@ bindsym $mod+Shift+q kill
 
 # start your launcher
 bindsym $mod+d exec $menu
-bindsym $mod+Shift+d exec $sgmenu
 
 # lock screen 
 bindsym $mod+9 exec $lockscreen
@@ -88,12 +87,6 @@ bindsym $mod+Shift+Print exec $screenshot_region
 # Change normal to inverse to use left mouse button for resizing and right
 # mouse button for dragging.
 floating_modifier $mod normal
-
-# reload the configuration file
-bindsym $mod+Shift+c reload
-
-# exit sway (logs you out of your wayland session)
-bindsym $mod+Shift+e exit
 
 #
 # Moving around:
@@ -173,7 +166,6 @@ bindsym $mod+a focus parent
 #
 # Rules:
 #
-for_window [class="Rofi"] floating enable
 
 # Scratchpad:
 #

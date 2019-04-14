@@ -1,16 +1,20 @@
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=dfc67e5b1fa10ebb4b70eb0c0ca67bea"
 
-SRC_URI = "https://github.com/swaywm/sway/archive/${PV}.tar.gz \
-		   file://config \
-		   "
+SRCREV = "bcde298a719f60b9913133dbd2a169dedbc8dd7d"
 
-SRC_URI[md5sum] = "680ed07c0ce401af645a99e42ea459be"
-SRC_URI[sha256sum] = "382955b9373219b2be6e2899a9f204383fe7ab9808ee28e56735b431bfbd81e2"
+PV = "1.0+git${SRCPV}"
 
-DEPENDS = "dbus cairo pango wlroots libinput libxkbcommon wayland wayland-native libpam libcap json-c libpcre gdk-pixbuf"
+S = "${WORKDIR}/git"
+SRC_URI = "gitsm://github.com/swaywm/sway \
+           file://config \
+           "
+
+UPSTREAM_CHECK_COMMITS = "1"
 
 inherit meson 
+
+DEPENDS = "dbus cairo pango wlroots libinput libxkbcommon wayland wayland-native libpam libcap json-c libpcre gdk-pixbuf"
 
 FILES_${PN} += "\
 	${datadir}/wayland-sessions/sway.desktop \
@@ -22,4 +26,5 @@ do_install_append() {
 }
 
 EXTRA_OEMESON += "-Ddefault-wallpaper=false -Dzsh-completions=false -Dbash-completions=false -Dfish-completions=false" 
+
 
