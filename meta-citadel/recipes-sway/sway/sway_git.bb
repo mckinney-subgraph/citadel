@@ -6,7 +6,7 @@ SRCREV = "bcde298a719f60b9913133dbd2a169dedbc8dd7d"
 PV = "1.0+git${SRCPV}"
 
 S = "${WORKDIR}/git"
-SRC_URI = "gitsm://github.com/swaywm/sway \
+SRC_URI = "git://github.com/swaywm/sway;protocol=https \
            file://config \
            "
 

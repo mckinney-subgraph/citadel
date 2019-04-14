@@ -4,7 +4,7 @@ inherit meson pkgconfig
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=e316e9609dd7672b87ff25b46b2cf3e1"
 
-SRC_URI = "gitsm://github.com/emersion/slurp" 
+SRC_URI = "git://github.com/emersion/slurp;protocol=https"
 PV = "0.1+git${SRCPV}"
 PR = "r0"
 

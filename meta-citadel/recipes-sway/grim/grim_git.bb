@@ -7,7 +7,7 @@ SRC_URI[sha256sum] = "c58ec15558debbb33e3390250e38375bc80b2275c8e902680424f7837b
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=e316e9609dd7672b87ff25b46b2cf3e1"
 
-SRC_URI = "gitsm://github.com/emersion/grim" 
+SRC_URI = "git://github.com/emersion/grim;protocol=https"
 PV = "0.1+git${SRCPV}"
 PR = "r0"
 
