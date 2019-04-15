@@ -1,0 +1,24 @@
+From 3fb6b84dc41a0c4abfa5b493635ee6a2c4abd0f8 Mon Sep 17 00:00:00 2001
+From: David McKinney <mckinney@subgraph.com>
+Date: Sun, 14 Apr 2019 18:57:03 +0000
+Subject: [PATCH] Patch gnome-shell to disable logging out
+
+---
+ js/misc/systemActions.js | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/js/misc/systemActions.js b/js/misc/systemActions.js
+index aa79bfe..4036783 100644
+--- a/js/misc/systemActions.js
++++ b/js/misc/systemActions.js
+@@ -361,8 +361,8 @@ const SystemActions = GObject.registerClass({
+ 
+     _updateLogout() {
+         let user = this._userManager.get_user(GLib.get_user_name());
+-
+-        let allowLogout = !this._lockdownSettings.get_boolean(DISABLE_LOG_OUT_KEY);
++        // Disable allowLogout globally in gnome-shell
++        let allowLogout = false;
+         let alwaysShow = global.settings.get_boolean(ALWAYS_SHOW_LOG_OUT_KEY);
+         let systemAccount = user.system_account;
+         let localAccount = user.local_account;
