@@ -18,6 +18,7 @@ RDEPENDS_${PN} = "\
     nautilus \
     gjs \
     caribou \
+    gvfs \
     gnome-keyring \
     gnome-session \
     gnome-shell \
