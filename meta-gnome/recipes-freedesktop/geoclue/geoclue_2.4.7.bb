@@ -14,5 +14,9 @@ FILES_${PN} += "/usr/lib/systemd /usr/share/dbus-1"
 
 inherit gettext pkgconfig autotools gobject-introspection
 
-EXTRA_OECONF = "--disable-gtk-doc --disable-3g-source --disable-modem-gps-source --disable-cdma-source --disable-nmea-source"
+EXTRA_OECONF = "--disable-gtk-doc --disable-3g-source --disable-modem-gps-source --disable-cdma-source --disable-nmea-source --enable-demo-agent=no"
 
+do_install_append () {
+    rm ${D}${datadir}/applications/geoclue-demo-agent.desktop
+    rm ${D}${datadir}/applications/geoclue-where-am-i.desktop
+}

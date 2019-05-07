@@ -23,3 +23,7 @@ FILES_${PN} += "\
 DEPENDS += "gtk+3 glib-2.0 pango gnome-autoar libxml2 gnome-desktop tracker gexiv2"
 
 EXTRA_OEMESON = "-Dselinux=false -Dpackagekit=false -Dextensions=false -Dintrospection=true"
+
+do_install_append () {
+    rm ${D}${datadir}/applications/nautilus-autorun-software.desktop
+}

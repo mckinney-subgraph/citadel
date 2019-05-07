@@ -39,3 +39,6 @@ do_configure_prepend() {
 	sed -i "s^@EXTRA_AM_VALAFLAGS@^--vapidir=${RECIPE_SYSROOT_NATIVE}${datadir}/vala-0.38/vapi --vapidir=${B}/bindings/vala --pkg gio-2.0^g" ${S}/ui/gtk3/Makefile.am
 }
 
+do_install_append () {
+    rm ${D}${datadir}/applications/ibus-setup.desktop
+}

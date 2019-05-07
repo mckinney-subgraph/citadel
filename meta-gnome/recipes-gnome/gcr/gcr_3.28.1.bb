@@ -25,3 +25,8 @@ FILES_${PN} += " \
 
 # http://errors.yoctoproject.org/Errors/Details/20229/
 ARM_INSTRUCTION_SET = "arm"
+
+do_install_append () {
+    rm ${D}${datadir}/applications/gcr-prompter.desktop
+    rm ${D}${datadir}/applications/gcr-viewer.desktop
+}
