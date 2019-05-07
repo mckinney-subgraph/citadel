@@ -20,6 +20,8 @@ GNOMEBASEBUILDCLASS = "meson"
 
 inherit gnomebase gobject-introspection gettext meson-exe-wrapper
 
-SRC_URI += " file://0001-don-t-run-power-module-tests.patch"
+SRC_URI += " file://0001-Disable-gsd-sharing-plugin.patch \
+             file://0001-don-t-run-power-module-tests.patch"
+
 EXTRA_OEMESON += "--buildtype=release -Dcups=false -Dsmartcard=false"
 
