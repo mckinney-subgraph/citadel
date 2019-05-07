@@ -1,0 +1,242 @@
+From 6e45a21ff2f60e81b5e69e70fed9a29fb0fdaa06 Mon Sep 17 00:00:00 2001
+From: David McKinney <mckinney@subgraph.com>
+Date: Mon, 6 May 2019 17:44:59 +0000
+Subject: [PATCH] Remove unneeded panels
+
+---
+ meson.build             |  2 ++
+ meson_options.txt       |  1 +
+ panels/info/meson.build | 26 +++++++++++++++++++-------
+ panels/meson.build      |  6 ++++--
+ shell/cc-panel-list.c   |  6 ++++++
+ shell/cc-panel-loader.c | 12 ++++++++++++
+ tests/meson.build       |  8 ++++----
+ 7 files changed, 48 insertions(+), 13 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index d7926c9..63cf927 100644
+--- a/meson.build
++++ b/meson.build
+@@ -115,9 +115,11 @@ endif
+ enable_goa = get_option('online_accounts')
+ enable_cups = get_option('cups')
+ enable_user_accounts = get_option('user_accounts')
++enable_citadel = get_option('citadel') 
+ config_h.set('WITH_GOA', enable_goa, description: 'Define to enable support for Gnome Online Accounts')
+ config_h.set('WITH_CUPS', enable_goa, description: 'Define to enable support for CUPS')
+ config_h.set('WITH_USER_ACCOUNTS', enable_user_accounts, description: 'Define to enable user accounts panel')
++config_h.set('CITADEL', enable_citadel, description: 'Define to enable the removal of components unneeded in Citadel')
+ 
+ goa_req_version = '>= 3.25.3'
+ pulse_req_version = '>= 2.0'
+diff --git a/meson_options.txt b/meson_options.txt
+index e0c3b23..0b969a1 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -9,3 +9,4 @@ option('staging_dir', type: 'string', description: 'set staging directory for cr
+ option('online_accounts', type: 'boolean', value: false, description: 'build with support for gnome-online-accounts')
+ option('cups', type: 'boolean', value: false, description: 'build with support for CUPS')
+ option('user_accounts', type: 'boolean', value: false, description: 'build with support for user accounts panel')
++option('citadel', type: 'boolean', value: true, description: 'build with Citadel support, which removes unneeded components')
+diff --git a/panels/info/meson.build b/panels/info/meson.build
+index c54e5fd..a3f3aa9 100644
+--- a/panels/info/meson.build
++++ b/panels/info/meson.build
+@@ -1,9 +1,11 @@
+ panel_names = [
+-  'default-apps',
+   'info-overview',
+-  'removable-media'
+ ]
+ 
++if not enable_citadel
++  panel_names += ['default-apps', 'removable-media']
++endif
++
+ panels_list += panel_names
+ 
+ foreach name: panel_names
+@@ -38,19 +40,29 @@ gsd_headers = ['gsd-disk-space-helper.h']
+ gsd_sources = ['gsd-disk-space-helper.c']
+ 
+ sources = files(gsd_sources) + files(
+-  'cc-info-default-apps-panel.c',
+   'cc-info-overview-panel.c',
+-  'cc-info-removable-media-panel.c',
+   'info-cleanup.c'
+ )
+ 
++if not enable_citadel
++  sources += files(
++    'cc-info-default-apps-panel.c',
++    'cc-info-removable-media-panel.c'
++  )
++endif
++
+ resource_data = files(
+   'GnomeLogoVerticalMedium.svg',
+-  'cc-info-default-apps-panel.ui',
+-  'cc-info-overview-panel.ui',
+-  'cc-info-removable-media-panel.ui'
++  'cc-info-overview-panel.ui'
+ )
+ 
++if not enable_citadel
++  resource_data += files(
++    'cc-info-default-apps-panel.ui',
++    'cc-info-removable-media-panel.ui'
++  )
++endif
++
+ sources += gnome.compile_resources(
+   'cc-' + cappletname + '-resources',
+   cappletname + '.gresource.xml',
+diff --git a/panels/meson.build b/panels/meson.build
+index 0f927bd..8d2ef07 100644
+--- a/panels/meson.build
++++ b/panels/meson.build
+@@ -1,7 +1,6 @@
+ subdir('common')
+ 
+ panels = [
+-  'applications',
+   'background',
+   'color',
+   'datetime',
+@@ -14,7 +13,6 @@ panels = [
+   'privacy',
+   'region',
+   'search',
+-  'sharing',
+   'sound',
+   'universal-access',
+ ]
+@@ -43,6 +41,10 @@ if enable_user_accounts
+   panels += ['user-accounts']
+ endif
+ 
++if not enable_citadel
++  panels += ['applications', 'sharing']
++endif
++
+ panels_list = []
+ panels_libs = []
+ foreach cappletname: panels
+diff --git a/shell/cc-panel-list.c b/shell/cc-panel-list.c
+index 5bdc4c8..6ca22b8 100644
+--- a/shell/cc-panel-list.c
++++ b/shell/cc-panel-list.c
+@@ -386,8 +386,10 @@ static const gchar * const panel_order[] = {
+   "universal-access",
+   "online-accounts",
+   "privacy",
++#ifndef CITADEL
+   "applications",
+   "sharing",
++#endif
+   "sound",
+   "power",
+   "network",
+@@ -397,7 +399,9 @@ static const gchar * const panel_order[] = {
+   "keyboard",
+   "mouse",
+   "printers",
++#ifndef CITADEL
+   "removable-media",
++#endif
+   "thunderbolt",
+   "wacom",
+   "color",
+@@ -406,7 +410,9 @@ static const gchar * const panel_order[] = {
+   "info-overview",
+   "datetime",
+   "user-accounts",
++#ifndef CITADEL
+   "default-apps",
++#endif
+   "reset-settings"
+ };
+ 
+diff --git a/shell/cc-panel-loader.c b/shell/cc-panel-loader.c
+index 93d18f0..c992e40 100644
+--- a/shell/cc-panel-loader.c
++++ b/shell/cc-panel-loader.c
+@@ -31,7 +31,9 @@
+ #ifndef CC_PANEL_LOADER_NO_GTYPES
+ 
+ /* Extension points */
++#ifndef CITADEL
+ extern GType cc_applications_panel_get_type (void);
++#endif
+ extern GType cc_background_panel_get_type (void);
+ #ifdef BUILD_BLUETOOTH
+ extern GType cc_bluetooth_panel_get_type (void);
+@@ -40,8 +42,10 @@ extern GType cc_color_panel_get_type (void);
+ extern GType cc_date_time_panel_get_type (void);
+ extern GType cc_display_panel_get_type (void);
+ extern GType cc_info_overview_panel_get_type (void);
++#ifndef CITADEL
+ extern GType cc_info_default_apps_panel_get_type (void);
+ extern GType cc_info_removable_media_panel_get_type (void);
++#endif
+ extern GType cc_keyboard_panel_get_type (void);
+ extern GType cc_mouse_panel_get_type (void);
+ #ifdef BUILD_NETWORK
+@@ -55,7 +59,9 @@ extern GType cc_printers_panel_get_type (void);
+ extern GType cc_privacy_panel_get_type (void);
+ extern GType cc_region_panel_get_type (void);
+ extern GType cc_search_panel_get_type (void);
++#ifndef CITADEL
+ extern GType cc_sharing_panel_get_type (void);
++#endif
+ extern GType cc_sound_panel_get_type (void);
+ #ifdef BUILD_THUNDERBOLT
+ extern GType cc_bolt_panel_get_type (void);
+@@ -84,7 +90,9 @@ extern void cc_wacom_panel_static_init_func (void);
+ 
+ static CcPanelLoaderVtable default_panels[] =
+ {
++#ifndef CITADEL
+   PANEL_TYPE("applications",     cc_applications_panel_get_type,         NULL),
++#endif
+   PANEL_TYPE("background",       cc_background_panel_get_type,           NULL),
+ #ifdef BUILD_BLUETOOTH
+   PANEL_TYPE("bluetooth",        cc_bluetooth_panel_get_type,            NULL),
+@@ -93,8 +101,10 @@ static CcPanelLoaderVtable default_panels[] =
+   PANEL_TYPE("datetime",         cc_date_time_panel_get_type,            NULL),
+   PANEL_TYPE("display",          cc_display_panel_get_type,              NULL),
+   PANEL_TYPE("info-overview",    cc_info_overview_panel_get_type,        NULL),
++#ifndef CITADEL
+   PANEL_TYPE("default-apps",     cc_info_default_apps_panel_get_type,    NULL),
+   PANEL_TYPE("removable-media",  cc_info_removable_media_panel_get_type, NULL),
++#endif
+   PANEL_TYPE("keyboard",         cc_keyboard_panel_get_type,             NULL),
+   PANEL_TYPE("mouse",            cc_mouse_panel_get_type,                NULL),
+ #ifdef BUILD_NETWORK
+@@ -112,7 +122,9 @@ static CcPanelLoaderVtable default_panels[] =
+   PANEL_TYPE("privacy",          cc_privacy_panel_get_type,              NULL),
+   PANEL_TYPE("region",           cc_region_panel_get_type,               NULL),
+   PANEL_TYPE("search",           cc_search_panel_get_type,               NULL),
++#ifndef CITADEL
+   PANEL_TYPE("sharing",          cc_sharing_panel_get_type,              NULL),
++#endif
+   PANEL_TYPE("sound",            cc_sound_panel_get_type,                NULL),
+ #ifdef BUILD_THUNDERBOLT
+   PANEL_TYPE("thunderbolt",      cc_bolt_panel_get_type,                 NULL),
+diff --git a/tests/meson.build b/tests/meson.build
+index cd52250..d0335b1 100644
+--- a/tests/meson.build
++++ b/tests/meson.build
+@@ -1,8 +1,8 @@
+ subdir('common')
+-subdir('datetime')
+-if host_is_linux
+-  subdir('network')
+-endif
++#subdir('datetime')
++#if host_is_linux
++#  subdir('network')
++#endif
+ 
+ subdir('interactive-panels')
+ 

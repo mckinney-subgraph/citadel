@@ -30,8 +30,15 @@ DEPENDS = "pulseaudio colord-gtk networkmanager ibus colord gnome-desktop gnome-
 #
 #      EXTRA_OEMESON += "-Duser_accounts=true"
 #      DEPENDS += "accountsservice krb5"
+# Citadel
 #
-SRC_URI += "file://0001-Make-GOA-CUPS-and-User-Accounts-optional.patch"
+#      This option disables some things in gnome-control-center such as certain 
+#      panels that are not used in Citadel, defaults to true in meson_options. 
+#      To re-enable these things, set the option to false:
+#      
+#      EXTRA_OEMESON += "-Dcitadel=false"
+SRC_URI += "  file://0001-Make-GOA-CUPS-and-User-Accounts-optional.patch \
+              file://0001-Remove-unneeded-panels.patch"
 
 FILES_${PN} += "\
     ${datadir}/bash-completion \
