@@ -7,7 +7,7 @@ inherit cargo systemd
 #
 # Update this when changes are pushed to github
 #
-SRCREV = "3820bcc08f98d5e83132ccf251d6ef543579dcf2"
+SRCREV = "4ce5d439d8ec4ba7cea03e18bac208a3aff0c707"
 
 GIT_URI = "git://github.com/brl/citadel-tools.git;protocol=https"
 
@@ -143,6 +143,8 @@ FILES_${PN} = "\
     ${libexecdir}/citadel-run \
     ${libexecdir}/citadel-install \
     ${libexecdir}/citadel-desktop-sync \
+    ${libexecdir}/realmsd \
+    ${sysconfdir}/dbus-1/system.d/com.subgraph.realms.Manager.conf \
     ${bindir}/citadel-image \
     ${bindir}/citadel-realmfs \
     ${bindir}/citadel-update \
@@ -157,6 +159,7 @@ do_install() {
     install -d ${D}${bindir}
     install -d ${D}${libexecdir}
     install -d ${D}${systemd_system_unitdir}
+    install -d ${D}/${sysconfdir}/dbus-1/system.d
 
     # Services desktop sync
     install -m 644 ${B}/systemd/citadel-desktop-watcher.path ${D}${systemd_system_unitdir}
@@ -168,8 +171,14 @@ do_install() {
     # /usr/libexec/citadel-tool
     install -m 755 ${TARGET_BIN}/citadel-tool ${D}${libexecdir}
 
+    # /usr/libexec/realmsd
+    install -m 755 ${TARGET_BIN}/realmsd ${D}${libexecdir}
+
     # citadel-realms as /usr/bin/realms
     install -m 755 -T ${TARGET_BIN}/citadel-realms ${D}${bindir}/realms
+
+    # realmsd polkit config file
+    install -m 644 ${B}/data/com.subgraph.realms.Manager.conf ${D}${sysconfdir}/dbus-1/system.d/
 
     ln ${D}${libexecdir}/citadel-tool ${D}${libexecdir}/citadel-boot
     ln ${D}${libexecdir}/citadel-tool ${D}${libexecdir}/citadel-install
