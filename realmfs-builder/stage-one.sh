@@ -105,10 +105,10 @@ generate_image() {
 #    BLOCKS=$(expr ${BLOCKS} \* 12 / 10)
 #    SIZE=$(expr ${BLOCKS} \* 1024)
 #    echo "Size is ${SIZE}"
-    BLOCKS=$(expr 340 \* 1024)
+    BLOCKS=$(expr 440 \* 1024)
     # allow online resize up to 32G
     dd if=/dev/zero of=${WORKDIR}/citadel-realmfs.ext4 seek=${BLOCKS} count=0 bs=4096
-    mkfs.ext4 -d ${ROOTFS} -i 4096 -b 4096 -F ${WORKDIR}/citadel-realmfs.ext4 ${BLOCKS}
+    mkfs.ext4 -d ${ROOTFS} -i 4096 -b 4096 -F ${WORKDIR}/citadel-realmfs.ext4 ${BLOCKS} || exit 1
 }
 
 usage() {
