@@ -1,0 +1,45 @@
+From 8d26c3717dfb677d8c7a739e26352c1c5ef7838a Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Thu, 4 Apr 2019 15:39:26 -0400
+Subject: [PATCH] do not use autoconf 213 to refresh old configure
+
+---
+ build/moz.configure/old.configure | 4 ++--
+ js/src/old-configure              | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/build/moz.configure/old.configure b/build/moz.configure/old.configure
+index 17d0c5bf..436fcc5e 100644
+--- a/build/moz.configure/old.configure
++++ b/build/moz.configure/old.configure
+@@ -33,7 +33,7 @@ def autoconf(mozconfig, autoconf):
+     autoconf = autoconf[0] if autoconf else None
+ 
+     for ac in (mozconfig_autoconf, autoconf, 'autoconf-2.13', 'autoconf2.13',
+-               'autoconf213'):
++               'autoconf213', 'autoconf'):
+         if ac:
+             autoconf = find_program(ac)
+             if autoconf:
+@@ -87,7 +87,7 @@ def prepare_configure(old_configure, mozconfig, autoconf, build_env, shell,
+             old_configure = os.path.join(old_configure_dir, 'js', 'src',
+                                          os.path.basename(old_configure))
+ 
+-    refresh = True
++    refresh = False
+     if exists(old_configure):
+         mtime = getmtime(old_configure)
+         aclocal = os.path.join(build_env.topsrcdir, 'build', 'autoconf',
+diff --git a/js/src/old-configure b/js/src/old-configure
+index 830b6361..129b131f 100644
+--- a/js/src/old-configure
++++ b/js/src/old-configure
+@@ -587,7 +587,7 @@ if test -z "$srcdir"; then
+   ac_prog=$0
+   ac_confdir=`echo $ac_prog|sed 's%/[^/][^/]*$%%'`
+   test "x$ac_confdir" = "x$ac_prog" && ac_confdir=.
+-  srcdir=$ac_confdir
++  srcdir="$ac_confdir/../../"
+   if test ! -r $srcdir/$ac_unique_file; then
+     srcdir=..
+   fi

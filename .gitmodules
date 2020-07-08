@@ -7,3 +7,6 @@
 [submodule "meta-intel"]
 	path = meta-intel
 	url = https://git.yoctoproject.org/git/meta-intel
+[submodule "meta-clang"]
+	path = meta-clang
+	url = https://github.com/kraj/meta-clang

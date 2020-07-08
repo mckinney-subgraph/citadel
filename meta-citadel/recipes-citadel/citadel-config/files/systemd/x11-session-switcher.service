@@ -1,0 +1,17 @@
+[Unit]
+Description=X11 Session Switcher
+After=accounts-daemon.service
+Wants=accounts-daemon.service
+
+ConditionKernelCommandLine=|citadel.x11
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+
+ExecStartPre=-/usr/bin/plymouth message --text="Setting session to Gnome X11"
+ExecStart=/usr/bin/busctl call org.freedesktop.Accounts /org/freedesktop/Accounts/User1000 org.freedesktop.Accounts.User SetXSession s "gnome-xorg"
+
+[Install]
+WantedBy=graphical.target
+

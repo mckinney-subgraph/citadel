@@ -2,7 +2,7 @@ SUMMARY = "GNOME Authentication Agent for PolicyKit"
 DESCRIPTION = "PolicyKit-gnome provides an Authentication Agent for PolicyKit that integrates well with the GNOME desktop environment"
 HOMEPAGE = "http://www.packagekit.org/"
 BUGTRACKER = "http://bugzilla.gnome.org/"
-DEPENDS = "polkit dbus-glib gconf gtk+ intltool-native gnome-common"
+DEPENDS = "polkit dbus-glib gconf gtk+3 glib-2.0-native intltool-native gnome-common"
 LICENSE = "LGPLv2+"
 LIC_FILES_CHKSUM = "file://COPYING;md5=74579fab173e4c5e12aac0cd83ee98ec \
                     file://src/main.c;beginline=1;endline=20;md5=aba145d1802f2329ba561e3e48ecb795"
@@ -16,8 +16,6 @@ SRC_URI[sha256sum] = "1784494963b8bf9a00eedc6cd3a2868fb123b8a5e516e66c5eda48df17
 EXTRA_OECONF = "\
     --disable-static \
 "
-
-DEPENDS += "gtk+3 glib-2.0-native"
 
 inherit autotools gtk-doc pkgconfig
 

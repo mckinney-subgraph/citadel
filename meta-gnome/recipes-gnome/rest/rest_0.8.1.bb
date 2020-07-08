@@ -6,7 +6,7 @@ SRC_URI[archive.sha256sum] = "0513aad38e5d3cedd4ae3c551634e3be1b9baaa79775e53b2d
 
 DEPENDS = "glib-2.0 libsoup-2.4 libxml2"
 
-inherit gnome 
+inherit gnomebase gtk-icon-cache gconf mime
 
 EXTRA_OECONF = "--enable-introspection=no"
 

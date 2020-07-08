@@ -3,7 +3,7 @@ HOMEPAGE = "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonk
 LICENSE = "MPL-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=dc9b6ecd19a14a54a628edaaf23733bf"
 
-SRC_URI = "http://archive.ubuntu.com/ubuntu/pool/main/m/mozjs60/mozjs60_60.2.3.orig.tar.xz \
+SRC_URI = "http://ftp.debian.org/debian/pool/main/m/mozjs60/mozjs60_60.2.3.orig.tar.xz \
            file://0001-do-not-create-python-environment-new.patch \
            file://0002-do-not-include-requireddefines.patch \
            file://0003-fix-coredump-caused-by-getenv.patch \

@@ -1,0 +1,21 @@
+From b8687182b9103a1209a6cb553821bb4e4cda5591 Mon Sep 17 00:00:00 2001
+From: David McKinney <mckinney@subgraph.com>
+Date: Thu, 2 Jul 2020 15:46:40 +0000
+Subject: [PATCH] Remove config dir from unit file
+
+---
+ src/iwd.service.in | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/iwd.service.in b/src/iwd.service.in
+index 77819eaf..e33b2f0b 100644
+--- a/src/iwd.service.in
++++ b/src/iwd.service.in
+@@ -19,7 +19,6 @@ ProtectHome=yes
+ ProtectSystem=strict
+ ProtectControlGroups=yes
+ ProtectKernelModules=yes
+-ConfigurationDirectory=iwd
+ StateDirectory=iwd
+ StateDirectoryMode=0700
+ 

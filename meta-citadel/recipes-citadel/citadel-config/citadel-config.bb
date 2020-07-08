@@ -49,7 +49,8 @@ SRC_URI = "\
     file://iptables-flush.sh \
     file://systemd/zram-swap.service \
     file://systemd/iptables.service \
-    file://systemd/session-switcher.service \
+    file://systemd/sway-session-switcher.service \
+    file://systemd/x11-session-switcher.service \
     file://systemd/citadel-setpassword.service \
     file://skel/profile \
     file://skel/bashrc \
@@ -68,11 +69,11 @@ USERADD_PARAM_${PN} = "-m -u 1000 -s /bin/bash citadel"
 INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
 
 # for citadel-ifconfig.sh citadel-setpassword.sh
-RDEPENDS_${PN} = "bash"
+RDEPENDS_${PN} = "bash wireless-regdb-static"
 
 inherit allarch systemd useradd
 
-SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path iptables.service session-switcher.service citadel-setpassword.service"
+SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path iptables.service sway-session-switcher.service x11-session-switcher.service citadel-setpassword.service"
 
 do_install() {
     install -m 0755 -d ${D}/storage
@@ -104,7 +105,8 @@ do_install() {
     install -m 644 ${WORKDIR}/systemd/zram-swap.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/iptables.service ${D}${systemd_system_unitdir}
 
-    install -m 644 ${WORKDIR}/systemd/session-switcher.service ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/systemd/sway-session-switcher.service ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/systemd/x11-session-switcher.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/citadel-setpassword.service ${D}${systemd_system_unitdir}
 
     install -m 644 ${WORKDIR}/systemd/watch-run-user.path ${D}${systemd_system_unitdir}

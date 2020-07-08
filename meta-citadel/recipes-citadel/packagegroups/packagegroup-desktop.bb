@@ -13,7 +13,6 @@ RDEPENDS_${PN} = "\
     accountsservice \
     upower \
     colord \
-    colord-plugins \
     gdm \
     plymouth \
     shared-mime-info \
