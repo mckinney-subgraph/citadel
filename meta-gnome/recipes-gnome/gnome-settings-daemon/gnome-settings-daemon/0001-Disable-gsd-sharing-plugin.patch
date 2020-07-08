@@ -1,4 +1,4 @@
-From d7bc4ecd5731378dea34a1ea9c7f8819a9a3cd12 Mon Sep 17 00:00:00 2001
+From 5b9ba7cbf744ed5e87041c894d3b3f967215b7be Mon Sep 17 00:00:00 2001
 From: David McKinney <mckinney@subgraph.com>
 Date: Mon, 22 Apr 2019 15:14:19 +0000
 Subject: [PATCH] Disable gsd-sharing plugin
@@ -8,14 +8,14 @@ Subject: [PATCH] Disable gsd-sharing plugin
  1 file changed, 1 deletion(-)
 
 diff --git a/plugins/meson.build b/plugins/meson.build
-index 3db69da..f35ce03 100644
+index ce7d86f..3246456 100644
 --- a/plugins/meson.build
 +++ b/plugins/meson.build
-@@ -10,7 +10,6 @@ enabled_plugins = [
+@@ -8,7 +8,6 @@ enabled_plugins = [
+   ['keyboard', 'Keyboard'],
    ['media-keys', 'MediaKeys'],
-   ['mouse', 'Mouse'],
    ['screensaver-proxy', 'ScreensaverProxy'],
 -  ['sharing', 'Sharing'],
    ['sound', 'Sound'],
+   ['usb-protection', 'UsbProtection'],
    ['xsettings', 'XSettings']
- ]

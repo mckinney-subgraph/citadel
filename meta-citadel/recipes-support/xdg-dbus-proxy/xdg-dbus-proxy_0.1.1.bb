@@ -7,9 +7,9 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=4fbd65380cdd255951079008b364516c"
 
 DEPENDS = "autoconf-archive-native glib-2.0"
 
-inherit autotools gnomebase
+inherit autotools gnomebase gtk-icon-cache mime
 
-SRCREV = "7531b44424f834f193fe7f83fe572084d9c77ad9"
+SRCREV = "9f6c5624f0dd57a8e301cd84c5525298bb754ed8"
 SRC_URI = "git://github.com/flatpak/xdg-dbus-proxy.git;protocol=https" 
 S = "${WORKDIR}/git"
 

@@ -1,0 +1,77 @@
+From a86f5783018fb551701ff0f46dc67adec493a68b Mon Sep 17 00:00:00 2001
+From: David McKinney <mckinney@subgraph.com>
+Date: Thu, 2 Jul 2020 15:38:19 +0000
+Subject: [PATCH] Disable power tests and USB protection
+
+---
+ plugins/meson.build       |  2 +-
+ plugins/power/meson.build | 46 ---------------------------------------
+ 2 files changed, 1 insertion(+), 47 deletions(-)
+
+diff --git a/plugins/meson.build b/plugins/meson.build
+index 3246456..d38fc18 100644
+--- a/plugins/meson.build
++++ b/plugins/meson.build
+@@ -9,7 +9,7 @@ enabled_plugins = [
+   ['media-keys', 'MediaKeys'],
+   ['screensaver-proxy', 'ScreensaverProxy'],
+   ['sound', 'Sound'],
+-  ['usb-protection', 'UsbProtection'],
++# ['usb-protection', 'UsbProtection'],
+   ['xsettings', 'XSettings']
+ ]
+ 
+diff --git a/plugins/power/meson.build b/plugins/power/meson.build
+index 69e619f..801c011 100644
+--- a/plugins/power/meson.build
++++ b/plugins/power/meson.build
+@@ -102,49 +102,3 @@ if host_is_linux
+   )
+ endif
+ 
+-output = 'gsdpowerconstants.py'
+-
+-gsdpowerconstants_py = custom_target(
+-  output,
+-  input: 'gsd-power-constants.h',
+-  output: output,
+-  build_by_default: true,
+-  command: [join_paths(meson.current_source_dir(), 'gsd-power-constants-update.pl'), '@INPUT@', '@OUTPUT@']
+-)
+-
+-output = 'gsdpowerenums.py'
+-
+-gsdpowerenums_py = custom_target(
+-  output,
+-  output: output,
+-  capture: true,
+-  build_by_default: true,
+-  command: [gsd_power_enums_update]
+-)
+-
+-test_py = find_program('test.py')
+-
+-envs = environment()
+-#envs.prepend('G_DEBUG', 'fatal-warnings')
+-envs.set('BUILDDIR', meson.current_build_dir())
+-envs.set('TOP_BUILDDIR', meson.build_root())
+-envs.set('LD_PRELOAD', 'libumockdev-preload.so.0')
+-envs.set('NO_AT_BRIDGE', '1')
+-envs.set('HAVE_SYSFS_BACKLIGHT', host_is_linux ? '1' : '0')
+-
+-if get_option('b_sanitize').split(',').contains('address')
+-  # libasan needs to be loaded first; so we need to explicitly preload it
+-  envs.set('POWER_LD_PRELOAD', 'libasan.so.5')
+-endif
+-
+-foreach i : [ 1, 2, 3, 4, 5, 6, 7, 8 ]
+-  test(
+-    'test-power @0@/8'.format(i),
+-    test_py,
+-    args: [ 'PowerPluginTest@0@'.format(i) ],
+-    env: envs,
+-    # The first set of tests takes very long because of SCREENSAVER_TIMEOUT_BLANK
+-    timeout: i == 1 ? 180 : 120
+-  )
+-endforeach
+-
