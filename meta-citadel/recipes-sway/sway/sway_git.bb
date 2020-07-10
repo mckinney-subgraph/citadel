@@ -1,9 +1,9 @@
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=dfc67e5b1fa10ebb4b70eb0c0ca67bea"
 
-SRCREV = "bcde298a719f60b9913133dbd2a169dedbc8dd7d"
+SRCREV = "ab77efc6caba50acc4c87e02ae3e6712ea808772"
 
-PV = "1.0+git${SRCPV}"
+PV = "1.4+git${SRCPV}"
 
 S = "${WORKDIR}/git"
 SRC_URI = "git://github.com/swaywm/sway;protocol=https \
