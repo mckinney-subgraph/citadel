@@ -1,0 +1,26 @@
+info "Writing /etc/apt/preferences"
+
+{
+	echo 'Package: *'
+	echo 'Pin: release a=stable'
+	echo 'Pin-Priority: 1000'
+
+	echo 'Package: *'
+	echo 'Pin: release a=unstable'
+	echo 'Pin-Priority: 2'
+	echo 'Package: firefox'
+	echo 'Pin: release a=unstable'
+	echo 'Pin-Priority: 1001'
+
+	echo 'Package: libfontconfig1'
+	echo 'Pin: release a=unstable'
+	echo 'Pin-Priority: 1001'
+
+	echo 'Package: fontconfig-config'
+	echo 'Pin: release a=unstable'
+	echo 'Pin-Priority: 1001'
+
+	echo 'Package: libnss3'
+	echo 'Pin: release a=unstable'
+	echo 'Pin-Priority: 1001'
+} > /etc/apt/preferences

@@ -1,0 +1,4 @@
+# 01_nodocs is deleted post install so that users are able to install docs in the realm after the build
+info "Deleting /etc/dpkg/dpkg.cfg.d/01_nodocs"
+
+rm /etc/dpkg/dpkg.cfg.d/01_nodocs
