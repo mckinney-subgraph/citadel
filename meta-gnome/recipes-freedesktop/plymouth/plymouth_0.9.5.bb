@@ -17,8 +17,8 @@ PROVIDES = "virtual/psplash"
 RPROVIDES_${PN} = "virtual-psplash virtual-psplash-support"
 
 SRC_URI = "http://www.freedesktop.org/software/plymouth/releases/${BPN}-${PV}.tar.xz file://plymouthd.conf file://subgraph.png"
-SRC_URI[md5sum] = "4efa5551d230165981b105e7c6a50aa7"
-SRC_URI[sha256sum] = "4a197a4f1a05785d7453dd829b231352fb2d09171bd86c5ffaafbb2dd6791351"
+SRC_URI[md5sum] = "8a25d23f3ae732af300a56fa33cacff2"
+SRC_URI[sha256sum] = "ecae257f351d098340542a5bc06de029404c24dcee87e6ebb2abd5ef117fce86"
 
 EXTRA_OECONF += " --enable-shared --disable-static --disable-gtk --disable-documentation \
     --with-logo=${LOGO} \
@@ -36,7 +36,7 @@ PACKAGECONFIG[gtk] = "--enable-gtk,--disable-gtk,gtk+"
 
 LOGO = "${WORKDIR}/subgraph.png"
 
-inherit autotools pkgconfig systemd
+inherit autotools pkgconfig systemd gettext
 
 do_install_append() {
     install -d ${D}${systemd_unitdir}/system

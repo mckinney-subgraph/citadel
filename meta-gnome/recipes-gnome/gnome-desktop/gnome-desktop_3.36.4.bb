@@ -9,8 +9,8 @@ inherit gnomebase gtk-icon-cache gconf mime pkgconfig upstream-version-is-even g
 
 WARN_QA_remove = "unknown-configure-option"
 
-SRC_URI[archive.md5sum] = "9fa17a6e2eacde3f9dd0df6be10091b2"
-SRC_URI[archive.sha256sum] = "38f994dcb1e1ae093d1c929c7acc4f88e39111e43b5fdc13125b0f6e2311c789"
+SRC_URI[archive.md5sum] = "285d5d8a97b7564809151d401199c239"
+SRC_URI[archive.sha256sum] = "007bbd48c1ca2fcb184713c923174c1d4328c3e33a2271ca536bdd3b71229bc6"
 
 DEPENDS += "itstool-native gsettings-desktop-schemas gconf virtual/libx11 gtk+3 glib-2.0 startup-notification xkeyboard-config iso-codes udev libseccomp"
 

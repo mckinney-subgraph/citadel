@@ -26,7 +26,7 @@ SRC_URI += " file://0001-Disable-sharing-USB-protection-add-systemd-to-.deskt.pa
 SRC_URI[archive.md5sum] = "cd23e30c4991ca1f477020c67ea3a540"
 SRC_URI[archive.sha256sum] = "d54b38b818c812f64b82cc6a1279e3ca5a6e391ee662793322a38cab5670bb7a"
 
-EXTRA_OEMESON += "-Dsystemd=true -Dsystemd_session=enable -Dsystemd_journal=true -Ddocbook=false -Dman=false"
+EXTRA_OEMESON += "-Dsystemd=true -Dsystemd_journal=true -Ddocbook=false -Dman=false"
 FILES_${PN} += " \
     ${bindir}/gnome-session \
     ${libexecdir}/gnome-session-ctl \

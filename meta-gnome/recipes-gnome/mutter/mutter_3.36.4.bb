@@ -41,9 +41,8 @@ GNOMEBASEBUILDCLASS = "meson"
 
 inherit gnomebase gsettings gobject-introspection gettext upstream-version-is-even distro_features_check
 
-SRC_URI[archive.md5sum] = "b9991b18071d6b1d0b1597702e3116c6"
-SRC_URI[archive.sha256sum] = "75b3764eb059fc935a54523a62bec1bedb935284046b6daa50869b195adddaf4"
-
+SRC_URI[archive.md5sum] = "b8efc78dd728792679b1bbe14d0f7f60"
+SRC_URI[archive.sha256sum] = "5a81911479790b077517b78a8a6ea445f8217e0e1f2734f93c060a67387d725c"
 
 # x11 is still mandatory - see meson.build
 REQUIRED_DISTRO_FEATURES = "x11 systemd"
