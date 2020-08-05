@@ -7,7 +7,7 @@ inherit cargo systemd
 #
 # Update this when changes are pushed to github
 #
-SRCREV = "3820bcc08f98d5e83132ccf251d6ef543579dcf2"
+SRCREV = "044d8a3457aa8e2b82a291a92e1fbfe973c56b44"
 
 GIT_URI = "git://github.com/brl/citadel-tools.git;protocol=https"
 
@@ -20,117 +20,137 @@ GIT_URI = "git://github.com/brl/citadel-tools.git;protocol=https"
 # the dependency list.
 
 SRC_URI += " \
-crate://crates.io/adler32/1.0.3 \
+crate://crates.io/addr2line/0.12.1 \
+crate://crates.io/adler32/1.1.0 \
 crate://crates.io/ansi_term/0.11.0 \
-crate://crates.io/arc-swap/0.3.8 \
+crate://crates.io/arc-swap/0.4.7 \
 crate://crates.io/array-macro/1.0.3 \
-crate://crates.io/atty/0.2.11 \
-crate://crates.io/autocfg/0.1.2 \
-crate://crates.io/backtrace-sys/0.1.28 \
-crate://crates.io/backtrace/0.3.14 \
-crate://crates.io/base64/0.10.1 \
-crate://crates.io/bincode/1.0.1 \
-crate://crates.io/bitflags/1.0.4 \
-crate://crates.io/block-buffer/0.7.0 \
-crate://crates.io/block-padding/0.1.3 \
-crate://crates.io/byte-tools/0.3.1 \
-crate://crates.io/byteorder/1.3.1 \
-crate://crates.io/bzip2-sys/0.1.7 \
-crate://crates.io/bzip2/0.3.3 \
-crate://crates.io/cc/1.0.32 \
-crate://crates.io/cfg-if/0.1.7 \
-crate://crates.io/chrono/0.4.6 \
-crate://crates.io/clap/2.32.0 \
+crate://crates.io/atk-sys/0.9.1 \
+crate://crates.io/atk/0.8.0 \
+crate://crates.io/atty/0.2.14 \
+crate://crates.io/autocfg/1.0.0 \
+crate://crates.io/backtrace/0.3.49 \
+crate://crates.io/bincode/1.2.1 \
+crate://crates.io/bitflags/1.2.1 \
+crate://crates.io/byteorder/1.3.4 \
+crate://crates.io/cairo-rs/0.8.1 \
+crate://crates.io/cairo-sys-rs/0.9.2 \
+crate://crates.io/cc/1.0.54 \
+crate://crates.io/cfg-if/0.1.10 \
+crate://crates.io/chrono/0.4.11 \
+crate://crates.io/clap/2.33.1 \
 crate://crates.io/crc32fast/1.2.0 \
-crate://crates.io/crossbeam-channel/0.3.8 \
-crate://crates.io/crossbeam-utils/0.6.5 \
+crate://crates.io/crossbeam-channel/0.3.9 \
+crate://crates.io/crossbeam-utils/0.6.6 \
 crate://crates.io/cursive/0.11.0 \
-crate://crates.io/dbus/0.6.4 \
-crate://crates.io/digest/0.8.0 \
-crate://crates.io/enum-map-derive/0.4.1 \
-crate://crates.io/enum-map-internals/0.1.2 \
+crate://crates.io/dbus/0.6.5 \
+crate://crates.io/dbus/0.8.4 \
+crate://crates.io/enum-map-derive/0.4.3 \
+crate://crates.io/enum-map-internals/0.1.3 \
 crate://crates.io/enum-map/0.5.0 \
-crate://crates.io/enumset/0.3.16 \
-crate://crates.io/enumset_derive/0.2.0 \
-crate://crates.io/failure/0.1.5 \
-crate://crates.io/failure_derive/0.1.5 \
-crate://crates.io/fake-simd/0.1.2 \
-crate://crates.io/filetime/0.2.4 \
-crate://crates.io/generic-array/0.12.0 \
-crate://crates.io/hex/0.3.2 \
-crate://crates.io/http_req/0.4.6 \
+crate://crates.io/enumset/0.3.19 \
+crate://crates.io/enumset_derive/0.3.2 \
+crate://crates.io/failure/0.1.8 \
+crate://crates.io/failure_derive/0.1.8 \
+crate://crates.io/filetime/0.2.10 \
+crate://crates.io/futures-channel/0.3.5 \
+crate://crates.io/futures-core/0.3.5 \
+crate://crates.io/futures-executor/0.3.5 \
+crate://crates.io/futures-io/0.3.5 \
+crate://crates.io/futures-macro/0.3.5 \
+crate://crates.io/futures-task/0.3.5 \
+crate://crates.io/futures-util/0.3.5 \
+crate://crates.io/fuzzy-matcher/0.3.4 \
+crate://crates.io/gdk-pixbuf-sys/0.9.1 \
+crate://crates.io/gdk-pixbuf/0.8.0 \
+crate://crates.io/gdk-sys/0.9.1 \
+crate://crates.io/gdk/0.12.1 \
+crate://crates.io/gimli/0.21.0 \
+crate://crates.io/gio-sys/0.9.1 \
+crate://crates.io/gio/0.8.1 \
+crate://crates.io/glib-sys/0.9.1 \
+crate://crates.io/glib/0.9.3 \
+crate://crates.io/gobject-sys/0.9.1 \
+crate://crates.io/gtk-sys/0.9.2 \
+crate://crates.io/gtk/0.8.1 \
+crate://crates.io/hermit-abi/0.1.14 \
+crate://crates.io/hex/0.4.2 \
 crate://crates.io/inotify-sys/0.1.3 \
-crate://crates.io/inotify/0.7.0 \
-crate://crates.io/kernel32-sys/0.2.2 \
-crate://crates.io/lazy_static/1.3.0 \
-crate://crates.io/libc/0.2.51 \
-crate://crates.io/libdbus-sys/0.1.5 \
-crate://crates.io/libflate/0.1.21 \
-crate://crates.io/libsodium-sys/0.2.1 \
-crate://crates.io/log/0.4.6 \
-crate://crates.io/nix/0.12.0 \
-crate://crates.io/num-complex/0.2.1 \
-crate://crates.io/num-integer/0.1.39 \
-crate://crates.io/num-iter/0.1.37 \
-crate://crates.io/num-rational/0.2.1 \
-crate://crates.io/num-traits/0.2.6 \
-crate://crates.io/num/0.2.0 \
-crate://crates.io/opaque-debug/0.2.2 \
-crate://crates.io/owning_ref/0.4.0 \
-crate://crates.io/pkg-config/0.3.14 \
-crate://crates.io/podio/0.1.6 \
-crate://crates.io/proc-macro2/0.4.27 \
-crate://crates.io/quote/0.6.11 \
-crate://crates.io/redox_syscall/0.1.51 \
+crate://crates.io/inotify/0.8.3 \
+crate://crates.io/lazy_static/1.4.0 \
+crate://crates.io/libc/0.2.71 \
+crate://crates.io/libdbus-sys/0.2.1 \
+crate://crates.io/libflate/0.1.27 \
+crate://crates.io/libsodium-sys/0.2.5 \
+crate://crates.io/log/0.4.8 \
+crate://crates.io/miniz_oxide/0.3.7 \
+crate://crates.io/nix/0.17.0 \
+crate://crates.io/num-complex/0.2.4 \
+crate://crates.io/num-integer/0.1.43 \
+crate://crates.io/num-iter/0.1.41 \
+crate://crates.io/num-rational/0.2.4 \
+crate://crates.io/num-traits/0.2.12 \
+crate://crates.io/num/0.2.1 \
+crate://crates.io/numtoa/0.1.0 \
+crate://crates.io/object/0.20.0 \
+crate://crates.io/once_cell/1.4.0 \
+crate://crates.io/owning_ref/0.4.1 \
+crate://crates.io/pango-sys/0.9.1 \
+crate://crates.io/pango/0.8.0 \
+crate://crates.io/pin-project-internal/0.4.22 \
+crate://crates.io/pin-project/0.4.22 \
+crate://crates.io/pin-utils/0.1.0 \
+crate://crates.io/pkg-config/0.3.17 \
+crate://crates.io/proc-macro-hack/0.5.16 \
+crate://crates.io/proc-macro-nested/0.1.6 \
+crate://crates.io/proc-macro2/0.4.30 \
+crate://crates.io/proc-macro2/1.0.18 \
+crate://crates.io/quote/0.6.13 \
+crate://crates.io/quote/1.0.7 \
+crate://crates.io/redox_syscall/0.1.56 \
 crate://crates.io/redox_termios/0.1.1 \
-crate://crates.io/ring/0.14.6 \
-crate://crates.io/rpassword/2.1.0 \
-crate://crates.io/rustc-demangle/0.1.13 \
-crate://crates.io/rustls/0.15.1 \
-crate://crates.io/same-file/1.0.4 \
-crate://crates.io/sct/0.5.0 \
-crate://crates.io/serde/1.0.89 \
-crate://crates.io/serde_derive/1.0.89 \
-crate://crates.io/sha2/0.8.0 \
-crate://crates.io/signal-hook/0.1.8 \
-crate://crates.io/smallvec/0.6.9 \
-crate://crates.io/sodiumoxide/0.2.2 \
-crate://crates.io/spin/0.5.0 \
+crate://crates.io/rle-decode-fast/1.0.1 \
+crate://crates.io/rpassword/4.0.5 \
+crate://crates.io/rustc-demangle/0.1.16 \
+crate://crates.io/same-file/1.0.6 \
+crate://crates.io/serde/1.0.112 \
+crate://crates.io/serde_derive/1.0.112 \
+crate://crates.io/signal-hook-registry/1.2.0 \
+crate://crates.io/signal-hook/0.1.16 \
+crate://crates.io/slab/0.4.2 \
+crate://crates.io/sodiumoxide/0.2.5 \
 crate://crates.io/stable_deref_trait/1.1.1 \
-crate://crates.io/strsim/0.7.0 \
-crate://crates.io/syn/0.14.9 \
-crate://crates.io/syn/0.15.29 \
-crate://crates.io/synstructure/0.10.1 \
-crate://crates.io/tar/0.4.22 \
-crate://crates.io/termion/1.5.1 \
-crate://crates.io/textwrap/0.10.0 \
-crate://crates.io/time/0.1.42 \
+crate://crates.io/strsim/0.8.0 \
+crate://crates.io/syn/0.15.44 \
+crate://crates.io/syn/1.0.31 \
+crate://crates.io/synstructure/0.12.4 \
+crate://crates.io/take_mut/0.2.2 \
+crate://crates.io/tar/0.4.29 \
+crate://crates.io/termion/1.5.5 \
+crate://crates.io/textwrap/0.11.0 \
+crate://crates.io/thread_local/1.0.1 \
+crate://crates.io/time/0.1.43 \
 crate://crates.io/toml/0.4.10 \
-crate://crates.io/typenum/1.10.0 \
-crate://crates.io/unicode-segmentation/1.2.1 \
-crate://crates.io/unicode-width/0.1.5 \
+crate://crates.io/toml/0.5.6 \
+crate://crates.io/unicode-segmentation/1.6.0 \
+crate://crates.io/unicode-width/0.1.7 \
 crate://crates.io/unicode-xid/0.1.0 \
-crate://crates.io/untrusted/0.6.2 \
-crate://crates.io/vcpkg/0.2.6 \
-crate://crates.io/vec_map/0.8.1 \
+crate://crates.io/unicode-xid/0.2.0 \
+crate://crates.io/vcpkg/0.2.10 \
+crate://crates.io/vec_map/0.8.2 \
 crate://crates.io/void/1.0.2 \
-crate://crates.io/walkdir/2.2.7 \
-crate://crates.io/webpki-roots/0.16.0 \
-crate://crates.io/webpki/0.19.1 \
-crate://crates.io/winapi-build/0.1.1 \
+crate://crates.io/walkdir/2.3.1 \
 crate://crates.io/winapi-i686-pc-windows-gnu/0.4.0 \
-crate://crates.io/winapi-util/0.1.2 \
+crate://crates.io/winapi-util/0.1.5 \
 crate://crates.io/winapi-x86_64-pc-windows-gnu/0.4.0 \
-crate://crates.io/winapi/0.2.8 \
-crate://crates.io/winapi/0.3.6 \
+crate://crates.io/winapi/0.3.8 \
 crate://crates.io/xattr/0.2.2 \
 crate://crates.io/xi-unicode/0.1.0 \
-crate://crates.io/zip/0.5.1 \
 "
 
 export SODIUM_USE_PKG_CONFIG = "1"
 
-DEPENDS = "libsodium openssl dbus"
+DEPENDS = "libsodium openssl dbus gtk+3 glib-2.0"
 BBCLASSEXTEND = "native"
 PACKAGES =+ "${PN}-realms ${PN}-tools ${PN}-mkimage"
 
@@ -143,13 +163,16 @@ FILES_${PN} = "\
     ${libexecdir}/citadel-run \
     ${libexecdir}/citadel-install \
     ${libexecdir}/citadel-desktop-sync \
+    ${libexecdir}/citadel-realmsd\
+    ${libexecdir}/citadel-realms-ui\
     ${bindir}/citadel-image \
     ${bindir}/citadel-realmfs \
     ${bindir}/citadel-update \
     ${systemd_system_unitdir} \
+    ${sysconfdir}/dbus-1/system.d \
 "
 
-SYSTEMD_SERVICE_${PN} = "citadel-current-watcher.path"
+SYSTEMD_SERVICE_${PN} = "citadel-current-watcher.path citadel-realmsd.service"
 
 TARGET_BIN = "${B}/target/${CARGO_TARGET_SUBDIR}"
 
@@ -163,6 +186,15 @@ do_install() {
     install -m 644 ${B}/systemd/citadel-desktop-watcher.service ${D}${systemd_system_unitdir}
     install -m 644 ${B}/systemd/citadel-current-watcher.path ${D}${systemd_system_unitdir}
     install -m 644 ${B}/systemd/citadel-current-watcher.service ${D}${systemd_system_unitdir}
+
+    # realmsd
+    install -m 644 ${B}/data/citadel-realmsd.service ${D}${systemd_system_unitdir}
+    install -m 755 -T ${TARGET_BIN}/realmsd ${D}${libexecdir}/citadel-realmsd
+    install -d ${D}${sysconfdir}/dbus-1/system.d
+    install -m 644 ${B}/data/com.subgraph.realms.Manager.conf ${D}${sysconfdir}/dbus-1/system.d
+
+    # citadel-realms-ui
+    install -m 755 ${TARGET_BIN}/citadel-realms-ui ${D}${libexecdir}
 
 
     # /usr/libexec/citadel-tool
