@@ -7,7 +7,7 @@ inherit cargo systemd
 #
 # Update this when changes are pushed to github
 #
-SRCREV = "044d8a3457aa8e2b82a291a92e1fbfe973c56b44"
+SRCREV = "695dc9da2115f5f3f731b711b4b127b45d7a137f"
 
 GIT_URI = "git://github.com/brl/citadel-tools.git;protocol=https"
 
