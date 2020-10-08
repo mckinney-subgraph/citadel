@@ -11,4 +11,5 @@ BBLAYERS ?= " \
   ##OEROOT##/../meta-rust \
   ##OEROOT##/../meta-citadel \
   ##OEROOT##/../meta-gnome \
+  ##OEROOT##/../meta-clang \
   "

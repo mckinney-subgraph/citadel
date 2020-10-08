@@ -6,9 +6,14 @@ dirs755="/boot /dev /usr/bin /usr/sbin /usr/lib /etc /etc/default /etc/skel /usr
 
 volatiles = ""
 
+FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+SRC_URI += "file://profile"
+
 do_install_append () {
     rm ${D}${sysconfdir}/fstab
     rm ${D}${sysconfdir}/skel/.bashrc
     rm ${D}${sysconfdir}/skel/.profile
-
+    install -m 0644 ${WORKDIR}/profile ${D}${sysconfdir}/profile
+    sed -i 's#ROOTHOME#${ROOT_HOME}#' ${D}${sysconfdir}/profile
+    sed -i 's#@BINDIR@#${bindir}#g' ${D}${sysconfdir}/profile
 }

@@ -2,14 +2,15 @@
 inherit packagegroup
 
 RDEPENDS_${PN} = "\
-    sgstatus \
     wlroots \
     sway \
     xcb-util-xrm \
     sgflow \
+    swaybg \
     swaylock \
     grim \
     slurp \
+    wdisplays \
     polkit-gnome \
 "
 

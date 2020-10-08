@@ -4,7 +4,6 @@ LICENSE = "MIT"
 
 PACKAGE_INSTALL = "\
     linux-firmware \
-    adapta-gtk-theme \
     paper-icon-theme \
     gnome-backgrounds \
     base16-vim \

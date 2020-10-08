@@ -1,0 +1,10 @@
+# This will prevent installation of docs/locales, it will be reverse in the post-install stage to let users install docs/locales in their realms
+info "Writing /etc/dpkg/dpkg.cfg.d/01_nodocs"
+
+{
+   echo 'path-exclude=/usr/share/locale/*'
+   echo 'path-exclude=/usr/share/man/*'
+   echo 'path-exclude=/usr/share/doc/*'
+   echo 'path-include=/usr/share/doc/*/copyright'
+
+} > /etc/dpkg/dpkg.cfg.d/01_nodocs

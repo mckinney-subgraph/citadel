@@ -1,0 +1,21 @@
+From 5d3bd1a8d7cdbbf193079ed6500070276b7c8c70 Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Thu, 4 Apr 2019 15:33:10 -0400
+Subject: [PATCH] fix coredump caused by getenv
+
+---
+ mozglue/misc/TimeStamp.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mozglue/misc/TimeStamp.cpp b/mozglue/misc/TimeStamp.cpp
+index c123bd71..b849254b 100644
+--- a/mozglue/misc/TimeStamp.cpp
++++ b/mozglue/misc/TimeStamp.cpp
+@@ -11,6 +11,7 @@
+ #include "mozilla/TimeStamp.h"
+ #include <stdio.h>
+ #include <string.h>
++#include <stdlib.h>
+ 
+ namespace mozilla {
+ 

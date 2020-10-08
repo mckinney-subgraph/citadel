@@ -19,6 +19,8 @@ RDEPENDS_${PN} = "\
     base-files \
     base-passwd \
     systemd \
+    systemd-conf \
+    systemd-container \
     syslinux \
     syslinux-extlinux \
     keymaps \
@@ -42,7 +44,6 @@ RDEPENDS_${PN} = "\
     tar \
     pciutils \
     sysfsutils \
-    wpa-supplicant \
     vim-tiny \
     nano \
     tzdata \

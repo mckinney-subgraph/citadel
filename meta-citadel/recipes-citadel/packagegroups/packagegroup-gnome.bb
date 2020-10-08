@@ -23,8 +23,12 @@ RDEPENDS_${PN} = "\
     gnome-session \
     gnome-shell \
     hicolor-icon-theme \
+    xf86-video-vesa \
+    xf86-video-intel \
+    xf86-video-modesetting \
+    xserver-xorg-extension-glx \
+    libdrm-amdgpu \
     dash-to-panel \
-    gnome-shell-extension-drive-menu \
     citadel-config-gnome \
 "
 

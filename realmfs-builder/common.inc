@@ -4,9 +4,9 @@
 
 BASE_PACKAGES="iproute2 less xz-utils sudo dbus libpam-systemd openssh-client packagekit-gtk3-module libcanberra-gtk3-module libpulse0 fonts-roboto-hinted bash-completion"
 
-BASE_PRE_INSTALL_MODULES="utility-library configure-locale create-user set-hostname no-install-recommends write-apt-sources"
+BASE_PRE_INSTALL_MODULES="utility-library configure-locale create-user set-hostname no-install-recommends write-dpkg-cfg-nodocs write-apt-preferences write-apt-sources"
 
-BASE_POST_INSTALL_MODULES="loginctl-enable-linger configure-systemd install-configure-host0 install-launch-script setup-theme-symlinks apt-cacher-ng add-xsettings-schema"
+BASE_POST_INSTALL_MODULES="loginctl-enable-linger configure-systemd install-configure-host0 install-launch-script setup-theme-symlinks apt-cacher-ng add-xsettings-schema delete-dpkg-cfg-nodocs"
 
 trap "exit 1" TERM
 export TOP_PID=$$
