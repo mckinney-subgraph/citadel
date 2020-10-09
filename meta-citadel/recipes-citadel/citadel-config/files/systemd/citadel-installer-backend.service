@@ -1,0 +1,13 @@
+[Unit]
+Description=Citadel Installer Backend
+
+ConditionKernelCommandLine=|citadel.install
+ConditionKernelCommandLine=|citadel.live
+
+[Service]
+
+ExecStart=/usr/libexec/citadel-install-backend
+
+[Install]
+WantedBy=graphical.target
+

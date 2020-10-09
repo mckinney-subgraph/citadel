@@ -1,0 +1,6 @@
+# /usr/share/gnome-session/sessions/citadel-installer.session
+[GNOME Session]
+Name=Citadel Installer
+RequiredComponents=citadel-installer-ui;org.gnome.SettingsDaemon.XSettings;
+
+
