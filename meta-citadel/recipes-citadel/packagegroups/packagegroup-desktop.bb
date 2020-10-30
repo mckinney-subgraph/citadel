@@ -21,6 +21,7 @@ RDEPENDS_${PN} = "\
     iso-codes \
     libgudev \
     networkmanager \
+    iwd \
     polkit \
     network-manager-applet \
     clutter-1.0 \

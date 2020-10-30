@@ -1,4 +1,4 @@
-From 5b7a690c82fd650c0fb4c31b51b52dec49abfb32 Mon Sep 17 00:00:00 2001
+From 12fd2083761c1d432a2b505a210d1289b2b1624f Mon Sep 17 00:00:00 2001
 From: David McKinney <mckinney@subgraph.com>
 Date: Wed, 8 Jul 2020 14:07:06 +0000
 Subject: [PATCH] Remove calendar server, fix build
@@ -12,10 +12,10 @@ Subject: [PATCH] Remove calendar server, fix build
  5 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/js/dbusServices/meson.build b/js/dbusServices/meson.build
-index c749f45..8669b0b 100644
+index 2f047bb..6484cdc 100644
 --- a/js/dbusServices/meson.build
 +++ b/js/dbusServices/meson.build
-@@ -20,7 +20,7 @@ foreach service, dir : dbus_services
+@@ -26,7 +26,7 @@ foreach service, dir : dbus_services
  
    serviceconf = configuration_data()
    serviceconf.set('service', service)
@@ -25,7 +25,7 @@ index c749f45..8669b0b 100644
  
    configure_file(
 diff --git a/meson.build b/meson.build
-index 6868d8e..caebf94 100644
+index d86879a..c23ab0b 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -18,8 +18,8 @@ cogl_pc = 'mutter-cogl-' + mutter_api_version
@@ -39,7 +39,7 @@ index 6868d8e..caebf94 100644
  gcr_req = '>= 3.7.5'
  gio_req = '>= 2.56.0'
  gi_req = '>= 1.49.1'
-@@ -78,8 +78,8 @@ else
+@@ -71,8 +71,8 @@ else
  endif
  
  atk_bridge_dep = dependency('atk-bridge-2.0')
@@ -50,7 +50,7 @@ index 6868d8e..caebf94 100644
  gcr_dep = dependency('gcr-base-3', version: gcr_req)
  gdk_x11_dep = dependency('gdk-x11-3.0')
  gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0')
-@@ -139,7 +139,7 @@ endif
+@@ -134,7 +134,7 @@ endif
  mutter_typelibdir = mutter_dep.get_pkgconfig_variable('typelibdir')
  python = find_program('python3')
  sassc = find_program('sassc')
@@ -60,7 +60,7 @@ index 6868d8e..caebf94 100644
  cc = meson.get_compiler('c')
  
 diff --git a/src/meson.build b/src/meson.build
-index 46680d5..6769de7 100644
+index a7c56bb..3118e67 100644
 --- a/src/meson.build
 +++ b/src/meson.build
 @@ -1,7 +1,7 @@
@@ -86,7 +86,7 @@ index a378a7e..f2a37ba 100644
  configure_file(
    input: prgname + '.in',
 diff --git a/subprojects/extensions-app/meson.build b/subprojects/extensions-app/meson.build
-index 20f938f..a13ff5e 100644
+index 4acd94c..c6bdd5f 100644
 --- a/subprojects/extensions-app/meson.build
 +++ b/subprojects/extensions-app/meson.build
 @@ -35,7 +35,7 @@ localedir = join_paths(datadir, 'locale')
@@ -96,5 +96,5 @@ index 20f938f..a13ff5e 100644
 -gjs = find_program('gjs')
 +gjs = '/usr/bin/gjs'
  appstream_util = find_program('appstream-util', required: false)
+ desktop_file_validate = find_program('desktop-file-validate', required: false)
  
- subdir('data')

@@ -3,7 +3,7 @@ natural-scroll=true
 tap-to-click=true
 
 [org.gnome.desktop.background]
-picture-uri='file:///usr/share/backgrounds/gnome/Icescape.jpg'
+picture-uri='file:///usr/share/backgrounds/gnome/Icetwigs.jpg'
 
 [org.gnome.desktop.screensaver]
 picture-uri='file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'

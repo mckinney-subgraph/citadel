@@ -1,0 +1,68 @@
+From a85ae8e4c464f0d4067ec86b4eba406917b4fd2e Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Wed, 28 Oct 2020 08:18:59 -0400
+Subject: [PATCH] Disable sharing and usb protection, add --systemd to desktops
+
+---
+ data/gnome-wayland.desktop.in.in | 4 +++-
+ data/gnome-xorg.desktop.in.in    | 2 +-
+ data/gnome.desktop.in.in         | 2 +-
+ data/meson.build                 | 2 --
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/data/gnome-wayland.desktop.in.in b/data/gnome-wayland.desktop.in.in
+index 516c211..14b5f5a 100644
+--- a/data/gnome-wayland.desktop.in.in
++++ b/data/gnome-wayland.desktop.in.in
+@@ -1,7 +1,9 @@
+ [Desktop Entry]
+ Name=GNOME
+ Comment=This session logs you into GNOME
+-Exec=@bindir@/gnome-session
++Exec=@bindir@/gnome-session --systemd --session=gnome
+ TryExec=@bindir@/gnome-session
+ Type=Application
+ DesktopNames=GNOME
++X-GDM-SessionRegisters=true
++
+diff --git a/data/gnome-xorg.desktop.in.in b/data/gnome-xorg.desktop.in.in
+index 9a76fac..40ec660 100644
+--- a/data/gnome-xorg.desktop.in.in
++++ b/data/gnome-xorg.desktop.in.in
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Name=GNOME on Xorg
+ Comment=This session logs you into GNOME
+-Exec=@bindir@/gnome-session
++Exec=@bindir@/gnome-session --systemd --session=gnome
+ TryExec=@bindir@/gnome-session
+ Type=Application
+ DesktopNames=GNOME
+diff --git a/data/gnome.desktop.in.in b/data/gnome.desktop.in.in
+index 7eec1de..d83655e 100644
+--- a/data/gnome.desktop.in.in
++++ b/data/gnome.desktop.in.in
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Name=GNOME
+ Comment=This session logs you into GNOME
+-Exec=@bindir@/gnome-session
++Exec=@bindir@/gnome-session --systemd --session=gnome
+ TryExec=@bindir@/gnome-session
+ Type=Application
+ DesktopNames=GNOME
+diff --git a/data/meson.build b/data/meson.build
+index e02b80d..08afab6 100644
+--- a/data/meson.build
++++ b/data/meson.build
+@@ -21,10 +21,8 @@ required_components = {
+     'org.gnome.SettingsDaemon.PrintNotifications',
+     'org.gnome.SettingsDaemon.Rfkill',
+     'org.gnome.SettingsDaemon.ScreensaverProxy',
+-    'org.gnome.SettingsDaemon.Sharing',
+     'org.gnome.SettingsDaemon.Smartcard',
+     'org.gnome.SettingsDaemon.Sound',
+-    'org.gnome.SettingsDaemon.UsbProtection',
+     'org.gnome.SettingsDaemon.Wacom',
+     'org.gnome.SettingsDaemon.XSettings',
+   ],

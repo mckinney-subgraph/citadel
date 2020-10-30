@@ -17,7 +17,6 @@ RDEPENDS_${PN} = "\
     mutter \
     nautilus \
     gjs \
-    caribou \
     gvfs \
     gnome-keyring \
     gnome-session \

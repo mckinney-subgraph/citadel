@@ -1,0 +1,40 @@
+From 0ec98dd65d3133514175968b19c01eed9b1d9b0c Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Tue, 27 Oct 2020 16:14:07 -0400
+Subject: [PATCH] Generator fails to build in cross-compile environment.
+
+It's not needed because it's for (re-)creating generate-docs-nm-settings-nmcli.xml
+which already exists in the source archive.
+---
+ clients/cli/meson.build | 21 ---------------------
+ 1 file changed, 21 deletions(-)
+
+diff --git a/clients/cli/meson.build b/clients/cli/meson.build
+index 517deff..d3b249c 100644
+--- a/clients/cli/meson.build
++++ b/clients/cli/meson.build
+@@ -35,24 +35,3 @@ executable(
+ 
+ endif
+ 
+-generate_docs_nm_settings_nmcli = executable(
+-  'generate-docs-nm-settings-nmcli',
+-  files(
+-    'generate-docs-nm-settings-nmcli.c',
+-  ),
+-  dependencies: [
+-    libnmc_base_dep,
+-    libnmc_dep,
+-    libnm_libnm_aux_dep,
+-  ],
+-  c_args: clients_c_flags + ['-DG_LOG_DOMAIN="@0@"'.format('nmcli')],
+-  link_args: ldflags_linker_script_binary,
+-  link_depends: linker_script_binary,
+-)
+-
+-generate_docs_nm_settings_nmcli_xml = custom_target(
+-  'generate-docs-nm-settings-nmcli.xml',
+-  output: 'generate-docs-nm-settings-nmcli.xml',
+-  command: [ generate_docs_nm_settings_nmcli ],
+-  capture: true,
+-)

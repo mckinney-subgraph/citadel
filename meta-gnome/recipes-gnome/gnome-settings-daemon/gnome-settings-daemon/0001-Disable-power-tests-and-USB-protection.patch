@@ -1,31 +1,29 @@
-From a86f5783018fb551701ff0f46dc67adec493a68b Mon Sep 17 00:00:00 2001
-From: David McKinney <mckinney@subgraph.com>
-Date: Thu, 2 Jul 2020 15:38:19 +0000
-Subject: [PATCH] Disable power tests and USB protection
-
----
- plugins/meson.build       |  2 +-
- plugins/power/meson.build | 46 ---------------------------------------
- 2 files changed, 1 insertion(+), 47 deletions(-)
-
 diff --git a/plugins/meson.build b/plugins/meson.build
-index 3246456..d38fc18 100644
+index c8c10db4..4d7d6ebe 100644
 --- a/plugins/meson.build
 +++ b/plugins/meson.build
-@@ -9,7 +9,7 @@ enabled_plugins = [
-   ['media-keys', 'MediaKeys'],
-   ['screensaver-proxy', 'ScreensaverProxy'],
-   ['sound', 'Sound'],
--  ['usb-protection', 'UsbProtection'],
-+# ['usb-protection', 'UsbProtection'],
-   ['xsettings', 'XSettings']
- ]
+@@ -8,7 +8,6 @@ all_plugins = [
+     ['media-keys', 'MediaKeys', 'GNOME keyboard shortcuts'],
+     ['screensaver-proxy', 'ScreensaverProxy', 'GNOME FreeDesktop screensaver'],
+     ['sound', 'Sound', 'GNOME sound sample caching'],
+-    ['usb-protection', 'UsbProtection', 'GNOME USB protection'],
+     ['xsettings', 'XSettings', 'GNOME XSettings'],
+     ['smartcard', 'Smartcard', 'GNOME smartcard'],
+     ['wacom', 'Wacom', 'GNOME Wacom tablet support'],
+@@ -32,7 +31,7 @@ if not enable_wacom
+ endif
  
+ if not enable_cups
+-    disabled_plugins += ['cups']
++    disabled_plugins += ['print-notifications']
+ endif
+ 
+ if not enable_rfkill
 diff --git a/plugins/power/meson.build b/plugins/power/meson.build
-index 69e619f..801c011 100644
+index 69e619f2..cd1c88b6 100644
 --- a/plugins/power/meson.build
 +++ b/plugins/power/meson.build
-@@ -102,49 +102,3 @@ if host_is_linux
+@@ -102,49 +102,4 @@ if host_is_linux
    )
  endif
  
@@ -74,4 +72,4 @@ index 69e619f..801c011 100644
 -    timeout: i == 1 ? 180 : 120
 -  )
 -endforeach
--
+ 

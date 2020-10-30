@@ -16,7 +16,7 @@ DEPENDS = "prelink \
 LIC_FILES_CHKSUM = "file://COPYING;md5=fbc093901857fcd118f065f900982c24"
 
 SRC_URI = " \
-           https://github.com/ibus/ibus/releases/download/${PV}/${PN}-${PV}.tar.gz \
+           https://github.com/ibus/ibus/releases/download/${PV}/${BPN}-${PV}.tar.gz \
            file://0001-strip-out-dbus-build-dep.patch \
            file://0002-decorate-automake-for-valaflags.patch \
 	   file://0003-use-wayland-display-on-wayland.patch \
@@ -28,7 +28,7 @@ SRC_URI[sha256sum] = "8170eba58c28aa4818970751ebdeada728ebb63d535967a5c5f5c21b00
 
 S = "${WORKDIR}/${PN}-${PV}"
 
-inherit autotools pkgconfig gtk-doc distro_features_check vala gobject-introspection 
+inherit autotools pkgconfig gtk-doc features_check vala gobject-introspection 
 
 FILES_${PN} += "${datadir}"
 FILES_${PN} += "${libdir}"

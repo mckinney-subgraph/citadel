@@ -40,7 +40,6 @@ SRC_URI = "\
     file://sudo-citadel \
     file://citadel-ifconfig.sh \
     file://00-storage-tmpfiles.conf \
-    file://NetworkManager.conf \
     file://share/dot.bashrc \
     file://share/dot.profile \
     file://share/dot.vimrc \
@@ -56,6 +55,7 @@ SRC_URI = "\
     file://systemd/x11-session-switcher.service \
     file://systemd/citadel-installer-backend.service \
     file://systemd/installer-session-switcher.service \
+    file://systemd/user/gnome-session@citadel-installer.target.d/session.conf \
     file://skel/profile \
     file://skel/bashrc \
     file://skel/vimrc \
@@ -77,7 +77,7 @@ RDEPENDS_${PN} = "bash wireless-regdb-static"
 
 inherit allarch systemd useradd
 
-SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path iptables.service sway-session-switcher.service x11-session-switcher.service citadel-installer-backend.service installer-session-switcher.service"
+SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path sway-session-switcher.service x11-session-switcher.service citadel-installer-backend.service installer-session-switcher.service"
 
 do_install() {
     install -m 0755 -d ${D}/storage
@@ -88,7 +88,7 @@ do_install() {
     install -m 0755 -d ${D}${sysconfdir}/skel
     install -m 0755 -d ${D}${sysconfdir}/tmpfiles.d
     install -m 0755 -d ${D}${sysconfdir}/udev/rules.d
-    install -m 0755 -d ${D}${sysconfdir}/NetworkManager
+#    install -m 0755 -d ${D}${sysconfdir}/NetworkManager
     install -m 0755 -d ${D}${sysconfdir}/polkit-1/rules.d
     install -m 0755 -d ${D}${sysconfdir}/modprobe.d
     install -m 0755 -d ${D}${sysconfdir}/sudoers.d
@@ -107,16 +107,20 @@ do_install() {
     install -m 0644 ${WORKDIR}/fstab ${D}${sysconfdir}/fstab
     install -m 0440 ${WORKDIR}/sudo-citadel ${D}${sysconfdir}/sudoers.d/citadel
     install -m 0644 ${WORKDIR}/00-storage-tmpfiles.conf ${D}${sysconfdir}/tmpfiles.d
-    install -m 0644 ${WORKDIR}/NetworkManager.conf ${D}${sysconfdir}/NetworkManager
+    #install -m 0644 ${WORKDIR}/NetworkManager.conf ${D}${sysconfdir}/NetworkManager
 
     install -d ${D}${systemd_system_unitdir}
+
     install -m 644 ${WORKDIR}/systemd/zram-swap.service ${D}${systemd_system_unitdir}
-    install -m 644 ${WORKDIR}/systemd/iptables.service ${D}${systemd_system_unitdir}
+#    install -m 644 ${WORKDIR}/systemd/iptables.service ${D}${systemd_system_unitdir}
 
     install -m 644 ${WORKDIR}/systemd/sway-session-switcher.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/x11-session-switcher.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/citadel-installer-backend.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/installer-session-switcher.service ${D}${systemd_system_unitdir}
+
+    install -d ${D}${systemd_user_unitdir}/gnome-session@citadel-installer.target.d
+    install -m 644 ${WORKDIR}/systemd/user/gnome-session@citadel-installer.target.d/session.conf ${D}${systemd_user_unitdir}/gnome-session@citadel-installer.target.d
 
     install -m 644 ${WORKDIR}/systemd/watch-run-user.path ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/watch-run-user.service ${D}${systemd_system_unitdir}

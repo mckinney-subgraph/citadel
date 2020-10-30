@@ -1,6 +1,6 @@
-From 94a5f59e39861ae98e305cca96dc296f6e44e28a Mon Sep 17 00:00:00 2001
-From: David McKinney <mckinney@subgraph.com>
-Date: Mon, 6 Jul 2020 12:30:21 +0000
+From 960f785681afa6c5ca835159172a4d0783ae5707 Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Tue, 27 Oct 2020 16:43:34 -0400
 Subject: [PATCH] Add options for Citadel and disabling GOA/CUPS
 
 ---
@@ -15,10 +15,10 @@ Subject: [PATCH] Add options for Citadel and disabling GOA/CUPS
  8 files changed, 107 insertions(+), 16 deletions(-)
 
 diff --git a/meson.build b/meson.build
-index 79a8053..db2f328 100644
+index 48044cc..8493433 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -115,6 +115,15 @@ if not libhandy_dep.found()
+@@ -114,6 +114,15 @@ if not libhandy_dep.found()
    libhandy_dep = libhandy.get_variable('libhandy_dep')
  endif
  
@@ -34,17 +34,17 @@ index 79a8053..db2f328 100644
  goa_req_version = '>= 3.25.3'
  pulse_req_version = '>= 2.0'
  
-@@ -125,7 +134,9 @@ gio_dep = dependency('gio-2.0')
+@@ -124,7 +133,9 @@ gio_dep = dependency('gio-2.0')
  glib_dep = dependency('glib-2.0', version: '>= 2.56.0')
  gnome_desktop_dep = dependency('gnome-desktop-3.0', version: '>= 3.27.90')
  gnome_settings_dep = dependency('gnome-settings-daemon', version: '>= 3.27.90')
 +if enable_goa
  goa_dep = dependency('goa-1.0', version: goa_req_version)
 +endif
- gsettings_desktop_dep = dependency('gsettings-desktop-schemas', version: '>= 3.31.0')
+ gsettings_desktop_dep = dependency('gsettings-desktop-schemas', version: '>= 3.37.1')
  libxml_dep = dependency('libxml-2.0')
  polkit_gobject_dep = dependency('polkit-gobject-1', version: '>= 0.114')
-@@ -150,6 +161,8 @@ common_deps = [
+@@ -149,6 +160,8 @@ common_deps = [
  ]
  
  # Check for CUPS 1.4 or newer
@@ -53,7 +53,7 @@ index 79a8053..db2f328 100644
  cups_dep = dependency('cups', version : '>= 1.4', required: false)
  assert(cups_dep.found(), 'CUPS 1.4 or newer not found')
  
-@@ -172,6 +185,7 @@ endforeach
+@@ -171,6 +184,7 @@ endforeach
  config_h.set10('HAVE_CUPS_HTTPCONNECT2',
                 cc.has_function('httpConnect2', dependencies: cups_dep),
                 description: 'Define if httpConnect2() is available in CUPS')
@@ -62,20 +62,20 @@ index 79a8053..db2f328 100644
  # Optional dependency for the user accounts panel
  enable_cheese = get_option('cheese')
 diff --git a/meson_options.txt b/meson_options.txt
-index e76308e..4bb77cd 100644
+index 1b7b548..8dd1b33 100644
 --- a/meson_options.txt
 +++ b/meson_options.txt
-@@ -7,3 +7,8 @@ option('tests', type: 'boolean', value: true, description: 'build tests')
- option('tracing', type: 'boolean', value: false, description: 'add extra debugging information')
+@@ -8,3 +8,8 @@ option('tracing', type: 'boolean', value: false, description: 'add extra debuggi
  option('wayland', type: 'boolean', value: true, description: 'build with Wayland support')
  option('profile', type: 'combo', choices: ['default','development'], value: 'default')
+ option('malcontent', type: 'boolean', value: false, description: 'build with malcontent support')
 +option('staging_dir', type: 'string', description: 'set staging directory for cross-compile')
 +option('online_accounts', type: 'boolean', value: false, description: 'build with support for gnome-online-accounts')
 +option('cups', type: 'boolean', value: false, description: 'build with support for CUPS')
 +option('user_accounts', type: 'boolean', value: false, description: 'build with support for user accounts panel')
 +option('citadel', type: 'boolean', value: true, description: 'build with Citadel support, which removes unneeded components')
 diff --git a/panels/background/bg-pictures-source.c b/panels/background/bg-pictures-source.c
-index faafd93..841fa66 100644
+index 3a3027b..a973b78 100644
 --- a/panels/background/bg-pictures-source.c
 +++ b/panels/background/bg-pictures-source.c
 @@ -29,7 +29,9 @@
@@ -162,7 +162,7 @@ index faafd93..841fa66 100644
  
  gboolean
  bg_pictures_source_add (BgPicturesSource     *bg_source,
-@@ -806,6 +817,7 @@ monitor_path (BgPicturesSource *self,
+@@ -804,6 +815,7 @@ monitor_path (BgPicturesSource *self,
    return monitor;
  }
  
@@ -170,7 +170,7 @@ index faafd93..841fa66 100644
  static void
  media_found_cb (BgPicturesSource *self, GrlMedia *media)
  {
-@@ -817,6 +829,7 @@ media_found_cb (BgPicturesSource *self, GrlMedia *media)
+@@ -815,6 +827,7 @@ media_found_cb (BgPicturesSource *self, GrlMedia *media)
    g_object_set_data_full (G_OBJECT (file), "grl-media", g_object_ref (media), g_object_unref);
    add_single_file_from_media (self, file, media);
  }
@@ -178,13 +178,13 @@ index faafd93..841fa66 100644
  
  static void
  bg_pictures_source_init (BgPicturesSource *self)
-@@ -839,9 +852,11 @@ bg_pictures_source_init (BgPicturesSource *self)
+@@ -837,9 +850,11 @@ bg_pictures_source_init (BgPicturesSource *self)
    cache_path = bg_pictures_source_get_cache_path ();
    self->cache_dir_monitor = monitor_path (self, cache_path);
  
 +#ifdef WITH_GOA
    self->grl_miner = cc_background_grilo_miner_new ();
-   g_signal_connect_swapped (self->grl_miner, "media-found", G_CALLBACK (media_found_cb), self);
+   g_signal_connect_object (self->grl_miner, "media-found", G_CALLBACK (media_found_cb), self, G_CONNECT_SWAPPED);
    cc_background_grilo_miner_start (self->grl_miner);
 +#endif
  }
@@ -297,7 +297,7 @@ index 2f4fdc5..82f54bd 100644
  panels_libs = []
  foreach cappletname: panels
 diff --git a/shell/cc-panel-list.c b/shell/cc-panel-list.c
-index 2578590..28251a9 100644
+index d425067..bb79e38 100644
 --- a/shell/cc-panel-list.c
 +++ b/shell/cc-panel-list.c
 @@ -392,11 +392,16 @@ static const gchar * const panel_order[] = {

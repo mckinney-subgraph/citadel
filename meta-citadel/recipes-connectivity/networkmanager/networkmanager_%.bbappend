@@ -1,7 +1,4 @@
 # Append recipe from meta-openembedded/meta-networking
-PACKAGECONFIG = "gnutls dhclient systemd wifi"
-EXTRA_OECONF_remove = "--with-nmtui=yes"
-EXTRA_OECONF += "--disable-ovs --with-nmtui=no"
 
 SRC_URI += "\
     file://watch-resolvconf.path \
