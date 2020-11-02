@@ -1,17 +1,8 @@
 require lvm2.inc
 
-SRCREV = "913c28917e62577a2ef67152b2e5159237503dda"
-
-SRC_URI = "git://github.com/lvmteam/lvm2.git;protocol=https;branch=master \
-           file://lvm.conf \
-           file://0001-implement-libc-specific-reopen_stream.patch \
-           file://0002-Guard-use-of-mallinfo-with-__GLIBC__.patch \
-           file://0003-include-fcntl.h-for-O_-defines-and-fcntl-signature.patch \
-           file://0004-tweak-MODPROBE_CMD-for-cross-compile.patch \
-           file://0001-Avoid-bashisms-in-init-scripts.patch \
-           file://0005-do-not-build-manual.patch \
-           file://0006-start-lvm2-monitor.service-after-tmp.mount.patch \
-           file://0001-explicitly-do-not-install-libdm.patch \
+SRC_URI += " \
+            file://0001-dev-hdc-open-failed-No-medium-found-will-print-out-i.patch \
+            file://0001-fix-command-bin-findmnt-bin-lsblk-bin-sort-not-found.patch \
            "
 
 DEPENDS += "autoconf-archive-native"
@@ -48,7 +39,24 @@ TARGET_CC_ARCH += "${LDFLAGS}"
 
 EXTRA_OECONF_append_class-nativesdk = " --with-confdir=${sysconfdir}"
 
-FILES_${PN} += "${libdir}/device-mapper/*.so"
+DEPENDS += "util-linux"
+LVM2_PACKAGECONFIG_append_class-target = " \
+    udev \
+"
+PACKAGECONFIG[udev] = "--enable-udev_sync --enable-udev_rules --with-udevdir=${nonarch_base_libdir}/udev/rules.d,--disable-udev_sync --disable-udev_rules,udev,${PN}-udevrules"
+
+PACKAGES =+ "libdevmapper"
+FILES_libdevmapper = " \
+    ${libdir}/libdevmapper.so.* \
+    ${sbindir}/dmsetup \
+    ${sbindir}/dmstats \
+"
+
+FILES_${PN} += " \
+    ${libdir}/device-mapper/*.so \
+    ${systemd_system_unitdir}/lvm2-pvscan@.service \
+"
+
 FILES_${PN}-scripts = " \
     ${sbindir}/blkdeactivate \
     ${sbindir}/fsadm \
@@ -58,13 +66,27 @@ FILES_${PN}-scripts = " \
 # Specified explicitly for the udev rules, just in case that it does not get picked
 # up automatically:
 FILES_${PN}-udevrules = "${nonarch_base_libdir}/udev/rules.d"
-RDEPENDS_${PN}-udevrules = "${PN}"
+RDEPENDS_${PN}-udevrules = "libdevmapper"
 RDEPENDS_${PN}_append_class-target = " libdevmapper"
 RDEPENDS_${PN}_append_class-nativesdk = " libdevmapper"
 
-RDEPENDS_${PN}-scripts = "${PN} (= ${EXTENDPKGV}) bash"
+RDEPENDS_${PN}-scripts = "${PN} (= ${EXTENDPKGV}) \
+                          bash \
+                          util-linux-lsblk \
+                          util-linux-findmnt \
+                          coreutils \
+"
 RRECOMMENDS_${PN}_class-target = "${PN}-scripts (= ${EXTENDPKGV})"
 
 CONFFILES_${PN} += "${sysconfdir}/lvm/lvm.conf"
+
+SYSROOT_PREPROCESS_FUNCS_append = " remove_libdevmapper_sysroot_preprocess"
+remove_libdevmapper_sysroot_preprocess() {
+    rm -f ${SYSROOT_DESTDIR}${libdir}/libdevmapper.so* \
+       ${SYSROOT_DESTDIR}${sbindir}/dmsetup \
+       ${SYSROOT_DESTDIR}${sbindir}/dmstats \
+       ${SYSROOT_DESTDIR}${includedir}/libdevmapper.h \
+       ${SYSROOT_DESTDIR}${libdir}/pkgconfig/devmapper.pc
+}
 
 BBCLASSEXTEND = "native nativesdk"

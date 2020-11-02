@@ -1,2 +1,3 @@
 
-PACKAGECONFIG = "fs crypto parted mdraid"
+PACKAGECONFIG = "fs crypto parted mdraid kmod"
+DEPENDS += "systemd"

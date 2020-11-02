@@ -17,6 +17,7 @@ PACKAGE_INSTALL = "\
     keymaps \
     systemd \
     systemd-initramfs \
+    systemd-extra-utils \
     linux-firmware-i915 \
     kernel-module-arc4 \
     kernel-module-ansi-cprng \

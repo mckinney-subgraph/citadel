@@ -8,20 +8,17 @@ SECTION = "devel/lib"
 
 LIC_FILES_CHKSUM = "file://LICENSE;md5=c07cb499d259452f324bb90c3067d85c"
 
-inherit autotools python3native gobject-introspection
+inherit autotools gobject-introspection
 
-SRCREV = "cb308566c3c5222b8422f78997a1742713b265a9"
-SRC_URI = " \
-    git://github.com/rhinstaller/libblockdev;branch=master \
-"
-
+SRC_URI = "git://github.com/storaged-project/libblockdev;branch=2.x-branch"
+SRCREV = "f5a4ba8bb298f8cbc435707d0b19b4b2ff836a8e"
 S = "${WORKDIR}/git"
 
-FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR}"
+FILES_${PN} += "${libdir}/python2.7/dist-packages ${libdir}/python3.*/site-packages"
 
 PACKAGECONFIG ??= "python3 lvm dm kmod parted fs escrow btrfs crypto mdraid kbd mpath nvdimm"
 PACKAGECONFIG[python3] = "--with-python3, --without-python3,,python3"
-PACKAGECONFIG[python2] = "--with-python2, --without-python2,,python2"
+PACKAGECONFIG[python2] = "--with-python2, --without-python2,,python"
 PACKAGECONFIG[lvm] = "--with-lvm, --without-lvm, multipath-tools, lvm2"
 PACKAGECONFIG[lvm-dbus] = "--with-lvm_dbus, --without-lvm_dbus, multipath-tools, lvm2"
 PACKAGECONFIG[dm] = "--with-dm, --without-dm, multipath-tools, lvm2"
