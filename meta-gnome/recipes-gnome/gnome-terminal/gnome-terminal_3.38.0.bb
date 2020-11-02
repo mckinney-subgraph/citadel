@@ -15,7 +15,7 @@ DEPENDS = " \
     libpcre2 \
 "
 
-inherit gnomebase gsettings gettext upstream-version-is-even
+inherit gnomebase gsettings gettext upstream-version-is-even python3native
 
 SRC_URI[archive.md5sum] = "947facc65c12735ac586e9dbf6228502"
 SRC_URI[archive.sha256sum] = "0a0fc7a8b383c6ffd61469be1dea5ba63cffad812921780e7fad40c2e2ae54f5"
