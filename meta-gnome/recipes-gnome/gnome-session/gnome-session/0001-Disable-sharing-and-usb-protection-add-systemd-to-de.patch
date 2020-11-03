@@ -51,18 +51,3 @@ index 7eec1de..d83655e 100644
  TryExec=@bindir@/gnome-session
  Type=Application
  DesktopNames=GNOME
-diff --git a/data/meson.build b/data/meson.build
-index e02b80d..08afab6 100644
---- a/data/meson.build
-+++ b/data/meson.build
-@@ -21,10 +21,8 @@ required_components = {
-     'org.gnome.SettingsDaemon.PrintNotifications',
-     'org.gnome.SettingsDaemon.Rfkill',
-     'org.gnome.SettingsDaemon.ScreensaverProxy',
--    'org.gnome.SettingsDaemon.Sharing',
-     'org.gnome.SettingsDaemon.Smartcard',
-     'org.gnome.SettingsDaemon.Sound',
--    'org.gnome.SettingsDaemon.UsbProtection',
-     'org.gnome.SettingsDaemon.Wacom',
-     'org.gnome.SettingsDaemon.XSettings',
-   ],

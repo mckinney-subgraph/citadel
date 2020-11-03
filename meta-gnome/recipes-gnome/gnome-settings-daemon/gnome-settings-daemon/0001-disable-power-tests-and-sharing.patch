@@ -1,16 +1,17 @@
 diff --git a/plugins/meson.build b/plugins/meson.build
-index c8c10db4..4d7d6ebe 100644
+index c8c10db..30c38ab 100644
 --- a/plugins/meson.build
 +++ b/plugins/meson.build
-@@ -8,7 +8,6 @@ all_plugins = [
-     ['media-keys', 'MediaKeys', 'GNOME keyboard shortcuts'],
-     ['screensaver-proxy', 'ScreensaverProxy', 'GNOME FreeDesktop screensaver'],
-     ['sound', 'Sound', 'GNOME sound sample caching'],
--    ['usb-protection', 'UsbProtection', 'GNOME USB protection'],
-     ['xsettings', 'XSettings', 'GNOME XSettings'],
-     ['smartcard', 'Smartcard', 'GNOME smartcard'],
-     ['wacom', 'Wacom', 'GNOME Wacom tablet support'],
-@@ -32,7 +31,7 @@ if not enable_wacom
+@@ -20,6 +20,8 @@ all_plugins = [
+ 
+ disabled_plugins = []
+ 
++disabled_plugins += ['sharing']
++
+ if not enable_smartcard
+     disabled_plugins += ['smartcard']
+ endif
+@@ -33,7 +35,7 @@ if not enable_wacom
  endif
  
  if not enable_cups
@@ -20,7 +21,7 @@ index c8c10db4..4d7d6ebe 100644
  
  if not enable_rfkill
 diff --git a/plugins/power/meson.build b/plugins/power/meson.build
-index 69e619f2..cd1c88b6 100644
+index 69e619f..cd1c88b 100644
 --- a/plugins/power/meson.build
 +++ b/plugins/power/meson.build
 @@ -102,49 +102,4 @@ if host_is_linux

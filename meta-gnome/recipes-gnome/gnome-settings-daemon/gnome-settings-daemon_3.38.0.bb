@@ -23,9 +23,8 @@ inherit gnomebase gobject-introspection gettext meson-exe-wrapper
 
 WARN_QA_remove = "unknown-configure-option"
 
-SRC_URI += "file://0001-Disable-gsd-sharing-plugin.patch \
-           file://0001-Disable-power-tests-and-USB-protection.patch \
-           "
+SRC_URI += "file://0001-disable-power-tests-and-sharing.patch"
+
 # allow cross build mixed with build of native tools
 do_write_config_append() {
     cat >${WORKDIR}/meson.native <<EOF
@@ -34,5 +33,13 @@ pkgconfig = 'pkg-config-native'
 EOF
 }
 
-EXTRA_OEMESON += "--buildtype=release --native-file ${WORKDIR}/meson.native -Dcups=false -Dsmartcard=false -Dwwan=false -Dsystemd=true -Ddebug_tools=false"
+EXTRA_OEMESON += "\
+    --buildtype=release \
+    --native-file ${WORKDIR}/meson.native \
+    -Dcups=false \
+    -Dsmartcard=false \
+    -Dwwan=false \
+    -Dusb-protection=false \
+    -Dsystemd=true \
+"
 
