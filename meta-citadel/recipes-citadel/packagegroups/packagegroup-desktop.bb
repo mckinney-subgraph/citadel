@@ -22,6 +22,7 @@ RDEPENDS_${PN} = "\
     libgudev \
     networkmanager \
     iwd \
+    wireless-regdb \
     polkit \
     network-manager-applet \
     clutter-1.0 \
@@ -44,5 +45,4 @@ RDEPENDS_${PN} = "\
     librsvg \
     librsvg-gtk \
     glib-2.0-utils \
-    xdg-dbus-proxy \
 "

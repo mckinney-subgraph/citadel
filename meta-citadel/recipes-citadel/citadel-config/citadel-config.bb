@@ -73,7 +73,7 @@ USERADD_PARAM_${PN} = "-m -u 1000 -s /bin/bash citadel"
 INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
 
 # for citadel-ifconfig.sh citadel-setpassword.sh
-RDEPENDS_${PN} = "bash wireless-regdb-static"
+RDEPENDS_${PN} = "bash"
 
 inherit allarch systemd useradd
 
