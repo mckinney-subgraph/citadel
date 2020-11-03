@@ -80,4 +80,5 @@ RDEPENDS_${PN} = "\
     efibootmgr \
     iw \
     sudo \
+    gawk \
 "
