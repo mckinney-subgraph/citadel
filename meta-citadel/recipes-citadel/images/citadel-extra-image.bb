@@ -4,6 +4,7 @@ LICENSE = "MIT"
 
 PACKAGE_INSTALL = "\
     linux-firmware \
+    wireless-regdb-static \
     paper-icon-theme \
     gnome-backgrounds \
     base16-vim \
