@@ -4,7 +4,7 @@ NO_RECOMMENDATIONS = "1"
 
 PACKAGE_INSTALL = "\
     citadel-initramfs \
-    citadel-tools \
+    citadel-tools-boot \
     cryptsetup \
     lvm2 \
     lvm2-udevrules \

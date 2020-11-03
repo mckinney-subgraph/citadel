@@ -194,10 +194,11 @@ export SODIUM_USE_PKG_CONFIG = "1"
 
 DEPENDS = "libsodium openssl dbus gtk+3 glib-2.0"
 BBCLASSEXTEND = "native"
-PACKAGES =+ "${PN}-realms ${PN}-tools ${PN}-mkimage"
+PACKAGES =+ "${PN}-realms ${PN}-tools ${PN}-mkimage ${PN}-boot"
 
 FILES_${PN}-realms = "${bindir}/realms"
 FILES_${PN}-mkimage = "${bindir}/citadel-mkimage"
+FILES_${PN}-boot = "${libexecdir}/citadel-boot"
 
 FILES_${PN} = "\
     ${libexecdir}/citadel-tool \
