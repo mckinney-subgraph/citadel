@@ -1,8 +1,7 @@
 [Unit]
 Description=Citadel Installer Backend
 
-ConditionKernelCommandLine=|citadel.install
-ConditionKernelCommandLine=|citadel.live
+ConditionKernelCommandLine=citadel.install
 
 [Service]
 

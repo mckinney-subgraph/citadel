@@ -3,8 +3,7 @@ Description=Citadel Installer Session Switcher
 After=accounts-daemon.service
 Wants=accounts-daemon.service
 
-ConditionKernelCommandLine=|citadel.installer
-ConditionKernelCommandLine=|citadel.live
+ConditionKernelCommandLine=citadel.install
 
 [Service]
 Type=oneshot
