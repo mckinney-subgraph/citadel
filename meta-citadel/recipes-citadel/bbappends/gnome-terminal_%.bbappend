@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS_prepend := "${THISDIR}/gnome-terminal:"
 
 SRC_URI += "\
     file://gnome-terminal-citadel.service \

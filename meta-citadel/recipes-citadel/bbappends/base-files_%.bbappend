@@ -6,7 +6,7 @@ dirs755="/boot /dev /usr/bin /usr/sbin /usr/lib /etc /etc/default /etc/skel /usr
 
 volatiles = ""
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS_prepend := "${THISDIR}/base-files:"
 SRC_URI += "file://profile"
 
 do_install_append () {
