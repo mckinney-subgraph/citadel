@@ -61,6 +61,7 @@ SRC_URI = "\
     file://skel/vimrc \
     file://apt-cacher-ng/acng.conf \
     file://apt-cacher-ng/security.conf \
+    file://iwd/main.conf \
     ${DEFAULT_REALM_UNITS} \
     ${MODPROBE_CONFIG} \
     ${SYSCTL_CONFIG} \
@@ -92,6 +93,7 @@ do_install() {
     install -m 0755 -d ${D}${sysconfdir}/polkit-1/rules.d
     install -m 0755 -d ${D}${sysconfdir}/modprobe.d
     install -m 0755 -d ${D}${sysconfdir}/sudoers.d
+    install -m 0755 -d ${D}${sysconfdir}/iwd
     install -m 0755 -d ${D}${datadir}/iptables
     install -m 0755 -d ${D}${datadir}/factory/skel
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager
@@ -156,6 +158,8 @@ do_install() {
     install -m 0644 ${WORKDIR}/polkit/citadel.rules ${D}${sysconfdir}/polkit-1/rules.d/
 
     install -m 0644 ${WORKDIR}/modprobe.d/audio_powersave.conf ${D}${sysconfdir}/modprobe.d/
+
+    install -m 0644 ${WORKDIR}/iwd/main.conf ${D}${sysconfdir}/iwd/
 
     install -d ${D}${datadir}/apt-cacher-ng/conf
     install -m 0644 ${WORKDIR}/apt-cacher-ng/acng.conf ${D}${datadir}/apt-cacher-ng/conf/

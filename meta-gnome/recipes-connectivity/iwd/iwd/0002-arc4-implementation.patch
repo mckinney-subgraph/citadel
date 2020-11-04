@@ -1,0 +1,147 @@
+
+Newer version of ell in poky has removed ARC4, but iwd 1.7 still requires it.
+
+Backported commit of internal implementation that was added to iwd. This patch
+will not be needed when iwd is upgraded to 1.9
+
+However, iwd 1.9 (and 1.8) has another problem:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=208599
+
+---
+
+diff --git a/src/crypto.c b/src/crypto.c
+index 696b5990..f5f8e24d 100644
+--- a/src/crypto.c
++++ b/src/crypto.c
+@@ -18,6 +18,8 @@
+  *  License along with this library; if not, write to the Free Software
+  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  *
++ *  (contains ARC4 implementation copyright (c) 2001 Niels Möller)
++ *
+  */
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -34,6 +36,16 @@
+ #include "src/missing.h"
+ #include "src/crypto.h"
+ 
++#define ARC4_MIN_KEY_SIZE	1
++#define ARC4_MAX_KEY_SIZE	256
++#define ARC4_KEY_SIZE		16
++
++struct arc4_ctx {
++	uint8_t S[256];
++	uint8_t i;
++	uint8_t j;
++};
++
+ /* RFC 3526, Section 2 */
+ const unsigned char crypto_dh5_prime[] = {
+ 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xc9, 0x0f, 0xda, 0xa2,
+@@ -415,44 +427,54 @@ free_ctr:
+ 	return false;
+ }
+ 
+-bool arc4_skip(const uint8_t *key, size_t key_len, size_t skip,
+-		const uint8_t *in, size_t len, uint8_t *out)
+-{
+-	char skip_buf[1024];
+-	struct l_cipher *cipher;
+-	struct iovec in_vec[2];
+-	struct iovec out_vec[2];
+-	bool r;
+-
+-	cipher = l_cipher_new(L_CIPHER_ARC4, key, key_len);
+-	if (!cipher)
+-		return false;
++#define SWAP(a,b) do { int _t = a; a = b; b = _t; } while (0)
+ 
+-	/* This is not strictly necessary, but keeps valgrind happy */
+-	memset(skip_buf, 0, sizeof(skip_buf));
++static void arc4_set_key(struct arc4_ctx *ctx, unsigned length,
++			 const uint8_t *key)
++{
++	unsigned int i, j, k;
+ 
+-	while (skip > sizeof(skip_buf)) {
+-		size_t to_skip =
+-			skip > sizeof(skip_buf) ? sizeof(skip_buf) : skip;
++	/* Initialize context */
++	for (i = 0; i < 256; i++)
++		ctx->S[i] = i;
+ 
+-		l_cipher_decrypt(cipher, skip_buf, skip_buf, to_skip);
+-		skip -= to_skip;
++	for (i = j = k = 0; i < 256; i++) {
++		j += ctx->S[i] + key[k]; j &= 0xff;
++		SWAP(ctx->S[i], ctx->S[j]);
++		/* Repeat key as needed */
++		k = (k + 1) % length;
+ 	}
++	ctx->i = ctx->j = 0;
++}
+ 
+-	in_vec[0].iov_base = skip_buf;
+-	in_vec[0].iov_len = skip;
+-	in_vec[1].iov_base = (void *) in;
+-	in_vec[1].iov_len = len;
++static void arc4_crypt(struct arc4_ctx *ctx, unsigned length, uint8_t *dst,
++		       const uint8_t *src)
++{
++	uint8_t i, j;
++
++	i = ctx->i; j = ctx->j;
++	while (length--) {
++		i++; i &= 0xff;
++		j += ctx->S[i]; j &= 0xff;
++		SWAP(ctx->S[i], ctx->S[j]);
++		if (!dst || !src)
++			continue;
++		*dst++ = *src++ ^ ctx->S[ (ctx->S[i] + ctx->S[j]) & 0xff ];
++	}
++	ctx->i = i; ctx->j = j;
++}
+ 
+-	out_vec[0].iov_base = skip_buf;
+-	out_vec[0].iov_len = skip;
+-	out_vec[1].iov_base = out;
+-	out_vec[1].iov_len = len;
++bool arc4_skip(const uint8_t *key, size_t key_len, size_t skip,
++		const uint8_t *in, size_t len, uint8_t *out)
++{
++	struct arc4_ctx cipher;
+ 
+-	r = l_cipher_decryptv(cipher, in_vec, 2, out_vec, 2);
+-	l_cipher_free(cipher);
++	arc4_set_key(&cipher, key_len, key);
++	arc4_crypt(&cipher, skip, NULL, NULL);
++	arc4_crypt(&cipher, len, out, in);
++	explicit_bzero(&cipher, sizeof(cipher));
+ 
+-	return r;
++	return true;
+ }
+ 
+ /* 802.11, Section 11.6.2, Table 11-4 */
+diff --git a/src/main.c b/src/main.c
+index 8bcbb6a7..105de3e1 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -271,15 +271,6 @@ static int check_crypto()
+ 		l_hashmap_insert(optional, "CONFIG_CRYPTO_SHA512_SSSE3", &r);
+ 	}
+ 
+-	if (!l_cipher_is_supported(L_CIPHER_ARC4)) {
+-		r = -ENOTSUP;
+-		l_error("RC4 support not found");
+-		l_hashmap_insert(options,
+-				"CONFIG_CRYPTO_USER_API_SKCIPHER", &r);
+-		l_hashmap_insert(options, "CONFIG_CRYPTO_ARC4", &r);
+-		l_hashmap_insert(options, "CONFIG_CRYPTO_ECB", &r);
+-	}
+-
+ 	if (!l_cipher_is_supported(L_CIPHER_DES) ||
+ 			!l_cipher_is_supported(L_CIPHER_DES3_EDE_CBC)) {
+ 		r = -ENOTSUP;
