@@ -5,11 +5,11 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 inherit kernel 
 
-SRC_URI = "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.7.8.tar.xz\
+SRC_URI = "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${PV}.tar.xz\
     file://defconfig \
 "
-SRC_URI[md5sum] = "0b397271b0b5e55a3d6e5566e607dee5"
-SRC_URI[sha256sum] = "afb577b88e400758ea64109937bb514ab8171fe9c5613138928ac232a3844dc6"
+SRC_URI[md5sum] = "5ba27cfd5d061947972a635fbb9b43a4"
+SRC_URI[sha256sum] = "d1ae28dfe9d25b73f2e437319df1b77d7ac1d0efd188cfb5df84a6784a318a73"
 
 LINUX_VERSION ?= "${PV}"
 S = "${WORKDIR}/linux-${LINUX_VERSION}"

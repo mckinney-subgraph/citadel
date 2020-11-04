@@ -19,7 +19,6 @@ PACKAGE_INSTALL = "\
     systemd-initramfs \
     systemd-extra-utils \
     linux-firmware-i915 \
-    kernel-module-arc4 \
     kernel-module-ansi-cprng \
     kernel-module-apple-bl \
     kernel-module-apple-gmux \
@@ -27,7 +26,6 @@ PACKAGE_INSTALL = "\
     kernel-module-appletouch \
     kernel-module-bcm5974 \
     kernel-module-ccm \
-    kernel-module-cmac \
     kernel-module-crc32-pclmul \
     kernel-module-crc32c-intel \
     kernel-module-crct10dif-pclmul \
