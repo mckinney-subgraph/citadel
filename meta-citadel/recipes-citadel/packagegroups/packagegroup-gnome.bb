@@ -12,10 +12,10 @@ RDEPENDS_${PN} = "\
     gnome-screenshot \
     gnome-settings-daemon \
     gnome-terminal \
-    gnome-usage \
+    gnome-disk-utility \
+    gnome-system-monitor \
     libgnome-desktop \
     mutter \
-    nautilus \
     gjs \
     gvfs \
     gnome-keyring \
