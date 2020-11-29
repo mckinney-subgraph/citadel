@@ -28,11 +28,6 @@ UDEV_RULES = "\
     file://udev/scsi-alpm.rules \
 "
 
-IPTABLES_RULES = "\
-    file://iptables/empty-filter.rules \
-    file://iptables/iptables.rules \
-"
-
 SRC_URI = "\
     file://locale.conf \
     file://environment.sh \
@@ -44,13 +39,11 @@ SRC_URI = "\
     file://share/dot.profile \
     file://share/dot.vimrc \
     file://polkit/citadel.rules \
-    file://iptables-flush.sh \
     file://citadel-installer.session \
     file://citadel-installer.json \
     file://citadel-installer.desktop \
     file://citadel-installer-ui.desktop \
     file://systemd/zram-swap.service \
-    file://systemd/iptables.service \
     file://systemd/sway-session-switcher.service \
     file://systemd/x11-session-switcher.service \
     file://systemd/citadel-installer-backend.service \
@@ -66,14 +59,13 @@ SRC_URI = "\
     ${MODPROBE_CONFIG} \
     ${SYSCTL_CONFIG} \
     ${UDEV_RULES} \
-    ${IPTABLES_RULES} \
 "
 
 USERADD_PACKAGES = "${PN}"
 USERADD_PARAM_${PN} = "-m -u 1000 -s /bin/bash citadel"
 INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
 
-# for citadel-ifconfig.sh citadel-setpassword.sh
+# for citadel-ifconfig.sh
 RDEPENDS_${PN} = "bash"
 
 inherit allarch systemd useradd
@@ -94,7 +86,6 @@ do_install() {
     install -m 0755 -d ${D}${sysconfdir}/modprobe.d
     install -m 0755 -d ${D}${sysconfdir}/sudoers.d
     install -m 0755 -d ${D}${sysconfdir}/iwd
-    install -m 0755 -d ${D}${datadir}/iptables
     install -m 0755 -d ${D}${datadir}/factory/skel
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager/system-connections
@@ -114,7 +105,6 @@ do_install() {
     install -d ${D}${systemd_system_unitdir}
 
     install -m 644 ${WORKDIR}/systemd/zram-swap.service ${D}${systemd_system_unitdir}
-#    install -m 644 ${WORKDIR}/systemd/iptables.service ${D}${systemd_system_unitdir}
 
     install -m 644 ${WORKDIR}/systemd/sway-session-switcher.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/x11-session-switcher.service ${D}${systemd_system_unitdir}
@@ -146,10 +136,6 @@ do_install() {
     install -m 0644 ${WORKDIR}/citadel-installer.json ${D}${datadir}/gnome-shell/modes/
     install -m 0644 ${WORKDIR}/citadel-installer-ui.desktop ${D}${datadir}/applications/
     install -m 0644 ${WORKDIR}/citadel-installer.desktop ${D}${datadir}/wayland-sessions/
-
-    install -m 0644 ${WORKDIR}/iptables/iptables.rules ${D}${datadir}/iptables/
-    install -m 0644 ${WORKDIR}/iptables/empty-filter.rules ${D}${datadir}/iptables/
-    install -m 0644 ${WORKDIR}/iptables-flush.sh ${D}${datadir}/iptables/
 
     install -m 0644 ${WORKDIR}/share/dot.bashrc ${D}${datadir}/factory/skel/.bashrc
     install -m 0644 ${WORKDIR}/share/dot.profile ${D}${datadir}/factory/skel/.profile
