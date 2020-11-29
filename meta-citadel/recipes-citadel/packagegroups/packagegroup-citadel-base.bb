@@ -32,7 +32,7 @@ RDEPENDS_${PN} = "\
     less \
     util-linux \
     net-tools \
-    iputils \
+    iputils-ping \
     which \
     parted \
     hdparm \
