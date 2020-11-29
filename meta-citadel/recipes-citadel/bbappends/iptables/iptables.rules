@@ -1,0 +1,8 @@
+*filter
+:INPUT DROP [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT DROP [0:0]
+-A INPUT -m state --state ESTABLISHED -j ACCEPT
+-A OUTPUT -p udp -m udp --sport 68 --dport 67 -j ACCEPT
+-A OUTPUT -j LOG --log-uid --log-prefix 'iptables'
+COMMIT
