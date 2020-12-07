@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="realms">
+ <info>
+  <link type="guide" xref="index#user"/>
+ </info>
+ <title>Citadel Realms</title>
+ <p>Citadel contains only the base operating system and the Gnome desktop, it does not
+ include any applications. To be able to install and run applications Citadel can
+ create spaces which are called Realms.</p>
+ <p>A Realm is a container similar to a Docker or LXC container in which any Linux
+ distribution could be installed.  We use a Debian based image but it would not be
+ difficult to create an image for another Linux distribution.</p>
+ <p>The realm containers are launched with systemd-nspawn but this is a detail of
+ how they are implemented and not something it is necessary to learn about in 
+ order to use them.</p>
+ <section>
+  <title>The <em>current</em> realm</title>
+  <p>Multiple realms may be launched at once but the Gnome Desktop is only associated with
+  one of the running realms.  This realm is called the `current` realm.</p>
+  <p>When displaying applications available to launch from the desktop, Gnome will only
+  be aware of applications that are installed in the realm which is set as `current`
+  and any application launched from the desktop will run inside this current realm.</p>
+  <p>Setting another realm as current does not affect any applications that are already running.
+  Changing the current realm only means that any further applications which are launched
+  will now run in the newly chosen realm.</p>
+ </section>
+ <section>
+  <title>Realm directory layout</title>
+  <p>The realms base directory is stored on the storage partition at `/storage/realms` and is bind mounted to `/realms` on the root filesystem for convenience.</p>
+  <screen>/realms
+    config
+    /Shared
+    /skel
+    /default.realm -> realm-main
+    /realm-main
+    /realm-project
+    /realm-testing</screen>
+  <section>
+   <title>/realms/config</title>
+   <p>This is the global realm configuration file. Options set in this file apply to every realm
+   unless the same option has been overridden with a different value in the config file for
+   a realm.</p>
+  </section>
+  <section>
+   <title>/realms/Shared</title>
+   <p>This directory is bind mounted to `/home/user/Shared` of each running realm that has
+   the option `use-shared-dir` enabled.  It's a convenient way to move files between
+   different realms and between citadel and realms.</p>
+  </section>
+ </section>
+</page>

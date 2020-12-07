@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="citadel">
+ <info>
+  <link type="guide" xref="index"/>
+  <desc>Introduction to Subgraph Citadel</desc>
+ </info>
+ <title>Subgraph Citadel</title>
+ <section>
+  <title>What is Citadel?</title>
+  <p>Citadel is the base operating system of the new version of Subgraph OS.</p>
+  <p>Citadel runs the GNOME desktop session and a few basic system services and
+  nothing else. It is built and distributed as a single static disk image
+  rather than as a collection of software packages like a traditional Linux
+  distribution such as Ubuntu or Fedora. Citadel disk images are built entirely
+  from the source code of the individual software components. This gives us
+  complete control over what is included and how each component is configured.</p>
+  <note style="advanced">
+   <p>Citadel is a modern desktop operating system based on the GNOME desktop, but if you
+   prefer we also include an tiling window manager called Sway as an alternative.</p>
+  </note>
+  <p>Since the Citadel root filesystem is immutable it is not possible to install
+  applications such as a web browser or text editor directly into Citadel.
+  Instead applications are run in a separate isolated environment called a Realm.</p>
+  <p>When Citadel is first installed a single primary Realm is created and while running
+  a single realm the system resembles and behaves similar to any other desktop Linux
+  system.  The separation between Citadel and the realm in which user applications are
+  launched is mostly transparent to the user. However, a user may create as many new
+  realms as they like and each new realm behaves like a freshly installed Debian Linux
+  environment where the user may install packages and store files.</p>
+  <p>Realms are implemented in Subgraph OS as either containers or as virtual machines
+  running in a custom KVM hypervisor. Both approaches have advantages so the user is
+  free to choose either option for each realm they create.</p>
+  <note style="advanced">
+   <p>Hypervisor isolation is stronger and more secure, but container isolation uses
+   less system resources and makes it possible to access hardware devices and other
+   system features directly. A Citadel user can decide which configuration makes
+   more sense for each Realm they create.</p>
+  </note>
+  <section>
+   <title>Stateless Foundation</title>
+   <p>In the architecture of Citadel the building blocks of the system are 
+   immutable filesystem images rather than packages. These images are mounted
+   read-only and this property is enforced with a Linux kernel feature (dm-verity)
+   which efficiently guarantees each block loaded from disk has a valid
+   cryptographic checksum. This means that Citadel always loads exactly the
+   operating system software prepared by Subgraph and rebooting the system will
+   always brings the computer into a known consistent state.</p>
+   <p>When Citadel is updated an entirely new image is loaded rather than applying
+   a set of changes on top of an existing filesystem. By atomically updating the 
+   entire system from one version to the next there is only ever a single software
+   configuration to consider and the system can never end up in an inconsistent state.
+   System upgrades cannot break your computer in mysterious ways and even if an 
+   upgrade fails to boot for some reason, the system simply reverts to the
+   previously working version.</p>
+  </section>
+ </section>
+</page>

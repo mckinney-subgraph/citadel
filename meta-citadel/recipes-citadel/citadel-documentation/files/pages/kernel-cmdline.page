@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="kernel-cmdline">
+ <info>
+  <link type="guide" xref="index#internals"/>
+ </info>
+ <title>Kernel Command Line Options</title>
+ <list>
+  <item>
+   <p>citadel.noverity</p>
+  </item>
+  <item>
+   <p>citadel.nosignatures</p>
+  </item>
+  <item>
+   <p>citadel.install</p>
+  </item>
+  <item>
+   <p>citadel.overlay</p>
+  </item>
+  <item>
+   <p>citadel.channel</p>
+  </item>
+  <item>
+   <p>citadel.verbose</p>
+  </item>
+  <item>
+   <p>citadel.debug</p>
+  </item>
+  <item>
+   <p>citadel.sway</p>
+  </item>
+ </list>
+</page>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="guide" id="index">
+ <title>Citadel Help</title>
+ <section id="user" style="2column">
+  <title>User Guide</title>
+ </section>
+ <section id="internals" style="2column">
+  <title>Citadel Internals</title>
+ </section>
+</page>

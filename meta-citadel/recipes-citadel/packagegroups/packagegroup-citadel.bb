@@ -10,4 +10,5 @@ RDEPENDS_${PN} = "\
     citadel-tools \
     citadel-tools-realms \
     citadel-tools-boot \
+    citadel-documentation \
 "

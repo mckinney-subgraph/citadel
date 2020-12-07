@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="developer">
+ <info>
+  <link type="guide" xref="index#internals"/>
+ </info>
+ <title>Developer Guide</title>
+ <section>
+  <title>Make Root Filesystem Writable</title>
+  <p>Sometimes it can be useful to make changes directly to the citadel root filesystem to
+  experiment with changes or to debug a problem.</p>
+  <p>First <code>citadel.noverity</code> must be added to the kernel commandline. After booting with
+  this command line option verify that dm-verity has been disabled with the <code>dmsetup</code>
+  command.</p>
+  <screen># dmsetup status rootfs
+0 4194304 linear</screen>
+  <p>If the output displays <code>verity</code> instead of <code>linear</code> then dm-verity is enabled
+  and the disk cannot be safely written to.</p>
+  <p>Next remount the root filesystem with read-write flag.</p>
+  <screen># mount -oremount,rw,noatime /</screen>
+ </section>
+ <section>
+  <title>Debugging GNOME startup</title>
+ </section>
+</page>

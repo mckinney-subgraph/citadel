@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="realm-config">
+ <info>
+  <link type="guide" xref="index#user"/>
+  <desc>Realm configuration file reference</desc>
+ </info>
+ <title>Configuring Realms</title>
+ <p>Realms are usually configured with the tools for managing realms, but the configuration
+ is stored in a TOML file in the realm directory and can also be edited by hand.</p>
+ <section>
+  <title>Options</title>
+  <terms>
+   <item>
+    <title><code>use-wayland</code></title>
+    <p>If 'true' access to Wayland display will be permitted in realm by
+    adding wayland socket /run/user/1000/wayland-0</p>
+   </item>
+   <item>
+    <title><code>use-x11</code></title>
+    <p>If 'true' access to X11 server will be added to realm by bind mounting directory
+    /tmp/.X11-unix</p>
+   </item>
+   <item>
+    <title><code>use-sound</code></title>
+    <p>If 'true' allows the use of sound inside realm. The following items will 
+    be added to realm:</p>
+    <list>
+     <item>
+      <p>/dev/snd</p>
+     </item>
+     <item>
+      <p>/dev/shm</p>
+     </item>
+     <item>
+      <p>/run/user/1000/pulse</p>
+     </item>
+    </list>
+   </item>
+   <item>
+    <title><code>use-kvm</code></title>
+    <p>If enabled, /dev/kvm will be added to the realm.
+    This option is only available for nspawn realms.</p>
+   </item>
+   <item>
+    <title><code>use-shared-dir</code></title>
+    <p>If enabled the directory /realms/Shared will be bind mounted into the home directory of the realm.
+    This directory is shared between all running realms that have this option enabled as a
+    convenient way to move files between realms.</p>
+   </item>
+   <item>
+    <title><code>use-ephemeral-home</code></title>
+    <p>If 'true' the home directory of this realm will be set up in ephemeral mode.
+    The ephemeral home directory is set up with the following steps</p>
+    <steps>
+     <item>
+      <p>Home directory is mounted as tmpfs</p>
+     </item>
+     <item>
+      <p>Any files in /realms/skel are copied into home directory</p>
+     </item>
+     <item>
+      <p>Any files in /realms/realm-${name}/skel are copied into home directory</p>
+     </item>
+     <item>
+      <p>Any directories listed in <code>ephemeral-persistent-dirs</code> are bind mounted
+      from /realms/realm-${name}/home into ephemeral home directory.</p>
+     </item>
+    </steps>
+   </item>
+   <item>
+    <title><code>ephemeral-persistent-dirs</code> default: ["Documents"]</title>
+    <p>A list of subdirectories of /realms/realm-${name}/home to bind mount into realm
+    home directory when <code>ephemeral-home</code> is enabled.</p>
+   </item>
+   <item>
+    <title><code>use-network</code></title>
+    <p>network</p>
+   </item>
+   <item>
+    <title><code>network-zone</code> default: "clear"</title>
+    <p>network zone</p>
+   </item>
+   <item>
+    <title><code>use-gpu</code></title>
+    <p>Enables hardware graphics acceleration in relam.
+    if 'true' render node device /dev/dri/renderD128 will be added to realm.</p>
+   </item>
+   <item>
+    <title><code>use-gpu-card0</code></title>
+    <p>If 'true' and <code>use-gpu</code> is also enabled, privileged device /dev/dri/card0
+    will be added to realm.</p>
+   </item>
+   <item>
+    <title><code>realmfs</code> default: "base"</title>
+    <p>name of realmfs image</p>
+   </item>
+   <item>
+    <title><code>overlay</code> default: "storage"</title>
+    <p>type of overlay to use</p>
+   </item>
+   <item>
+    <title><code>terminal-scheme</code></title>
+    <p>terminal color scheme</p>
+   </item>
+   <item>
+    <title><code>extra-bindmounts</code></title>
+    <p>bind mounts</p>
+   </item>
+   <item>
+    <title><code>extra-bindmounts-ro</code></title>
+    <p>read-only bind mounts</p>
+   </item>
+   <item>
+    <title><code>system-realm</code> default: false</title>
+    <p>system realm</p>
+   </item>
+   <item>
+    <title><code>autostart</code> default: false</title>
+    <p>autostart realm</p>
+   </item>
+  </terms>
+ </section>
+</page>

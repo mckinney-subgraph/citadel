@@ -1,0 +1,88 @@
+= Configuring Realms
+  [topic]
+  @link[guide >index#user]
+  @desc Realm configuration file reference
+
+
+Realms are usually configured with the tools for managing realms, but the configuration
+is stored in a TOML file in the realm directory and can also be edited by hand.
+
+
+== Options
+
+[terms]
+- $code(use-wayland)
+* If 'true' access to Wayland display will be permitted in realm by
+  adding wayland socket /run/user/1000/wayland-0
+
+- $code(use-x11)
+* If 'true' access to X11 server will be added to realm by bind mounting directory
+  /tmp/.X11-unix
+
+- $code(use-sound)
+* If 'true' allows the use of sound inside realm. The following items will 
+  be added to realm:
+  * /dev/snd
+  * /dev/shm
+  * /run/user/1000/pulse
+
+- $code(use-kvm)
+* If enabled, /dev/kvm will be added to the realm.
+  This option is only available for nspawn realms.
+
+- $code(use-shared-dir)
+* If enabled the directory /realms/Shared will be bind mounted into the home directory of the realm.
+  This directory is shared between all running realms that have this option enabled as a
+  convenient way to move files between realms.
+
+- $code(use-ephemeral-home)
+* If 'true' the home directory of this realm will be set up in ephemeral mode.
+  The ephemeral home directory is set up with the following steps
+  [steps]
+    * Home directory is mounted as tmpfs
+    * Any files in /realms/skel are copied into home directory
+    * Any files in /realms/realm-${name}/skel are copied into home directory
+    * Any directories listed in $code(ephemeral-persistent-dirs) are bind mounted
+      from /realms/realm-${name}/home into ephemeral home directory.
+
+- $code(ephemeral-persistent-dirs) default: ["Documents"]
+* A list of subdirectories of /realms/realm-${name}/home to bind mount into realm
+  home directory when $code(ephemeral-home) is enabled.
+
+- $code(use-network)
+* network
+
+- $code(network-zone) default: "clear"
+* network zone
+
+- $code(use-gpu)
+* Enables hardware graphics acceleration in relam.
+  if 'true' render node device /dev/dri/renderD128 will be added to realm.
+
+- $code(use-gpu-card0)
+* If 'true' and $code(use-gpu) is also enabled, privileged device /dev/dri/card0
+  will be added to realm.
+
+- $code(realmfs) default: "base"
+* name of realmfs image
+
+- $code(overlay) default: "storage"
+* type of overlay to use
+
+- $code(terminal-scheme)
+* terminal color scheme
+
+- $code(extra-bindmounts)
+* bind mounts
+
+- $code(extra-bindmounts-ro)
+* read-only bind mounts
+
+
+- $code(system-realm) default: false
+* system realm
+
+- $code(autostart) default: false
+* autostart realm
+
+
