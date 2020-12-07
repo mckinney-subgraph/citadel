@@ -7,7 +7,7 @@ inherit cargo systemd
 #
 # Update this when changes are pushed to github
 #
-SRCREV = "ac46b45f05fb2a6f0ff3a233152b8840b6e22469"
+SRCREV = "3cf87ee1da8f5b42fcd45991ca59af790c596eb9"
 
 GIT_URI = "git://github.com/brl/citadel-tools.git;protocol=https"
 
@@ -217,7 +217,7 @@ FILES_${PN} = "\
     ${sysconfdir}/dbus-1/system.d \
 "
 
-SYSTEMD_SERVICE_${PN} = "citadel-current-watcher.path citadel-realmsd.service"
+SYSTEMD_SERVICE_${PN} = "citadel-current-watcher.path citadel-realmsd.service citadel-boot-automount.service"
 
 TARGET_BIN = "${B}/target/${CARGO_TARGET_SUBDIR}"
 
@@ -231,6 +231,9 @@ do_install() {
     install -m 644 ${B}/systemd/citadel-desktop-watcher.service ${D}${systemd_system_unitdir}
     install -m 644 ${B}/systemd/citadel-current-watcher.path ${D}${systemd_system_unitdir}
     install -m 644 ${B}/systemd/citadel-current-watcher.service ${D}${systemd_system_unitdir}
+
+    # Unit to run: citadel-boot boot-automount
+    install -m 644 ${B}/systemd/citadel-boot-automount.service ${D}${systemd_system_unitdir}
 
     # realmsd
     install -m 644 ${B}/data/citadel-realmsd.service ${D}${systemd_system_unitdir}
