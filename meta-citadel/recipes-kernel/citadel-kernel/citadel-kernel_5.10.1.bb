@@ -8,8 +8,8 @@ inherit kernel
 SRC_URI = "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${PV}.tar.xz\
     file://defconfig \
 "
-SRC_URI[md5sum] = "5ba27cfd5d061947972a635fbb9b43a4"
-SRC_URI[sha256sum] = "d1ae28dfe9d25b73f2e437319df1b77d7ac1d0efd188cfb5df84a6784a318a73"
+
+SRC_URI[sha256sum] = "ed1661128c9bd3e8c9f55e345f715b90fefcf6b127c77e0286773242e7a14e5c"
 
 LINUX_VERSION ?= "${PV}"
 S = "${WORKDIR}/linux-${LINUX_VERSION}"
