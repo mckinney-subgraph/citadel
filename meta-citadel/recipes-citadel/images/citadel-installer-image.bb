@@ -38,7 +38,7 @@ install_efi_files() {
 
     install -d ${IMAGE_ROOTFS}/loader/entries
     make_loader_conf > ${IMAGE_ROOTFS}/loader/loader.conf
-    make_live_conf > ${IMAGE_ROOTFS}/loader/entries/live.conf
+    make_install_conf > ${IMAGE_ROOTFS}/loader/entries/install.conf
 }
 
 SYSLINUX_MODULES = "ldlinux.c32 menu.c32 libutil.c32 gptmbr.bin"
@@ -60,7 +60,7 @@ install_image_files() {
 }
 
 make_loader_conf() {
-    echo "default live"
+    echo "default install"
     echo "timeout 5"
 }
 
@@ -83,14 +83,14 @@ cat << EOF
 UI menu.c32
 PROMPT 0
 
-MENU TITLE Boot Live Subgraph OS (Citadel)
+MENU TITLE Boot Subgraph OS Installer (Citadel)
 TIMEOUT 50
 DEFAULT subgraph
 
 LABEL subgraph
         MENU LABEL Subgraph OS
 	LINUX ../bzImage-${CITADEL_KERNEL_VERSION}
-	APPEND ${KERNEL_CMDLINE} citadel.live
+	APPEND ${KERNEL_CMDLINE} citadel.install
 EOF
 }
 
@@ -136,7 +136,6 @@ write_boot_image() {
     IMAGE_SIZE=$(expr ${BLOCKS_ROOTFS} + ${BLOCKS_EXTRA})
 
     if [ -e ${IMAGE_PATH} ]; then
-        
         rm ${IMAGE_PATH}
     fi
 

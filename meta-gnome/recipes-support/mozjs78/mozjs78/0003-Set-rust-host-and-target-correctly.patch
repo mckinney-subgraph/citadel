@@ -1,0 +1,85 @@
+From de3d0659eb98f32a6da57c585a5417106bf93f99 Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Tue, 20 Oct 2020 08:03:45 -0400
+Subject: [PATCH] Set rust host and target correctly
+
+---
+ build/moz.configure/rust.configure | 44 +++++++++++++++++++++---------
+ 1 file changed, 31 insertions(+), 13 deletions(-)
+
+diff --git a/build/moz.configure/rust.configure b/build/moz.configure/rust.configure
+index e5122d6b8..5575267d3 100644
+--- a/build/moz.configure/rust.configure
++++ b/build/moz.configure/rust.configure
+@@ -48,15 +48,6 @@ def unwrap_rustup(prog, name):
+             return
+ 
+         def from_rustup_which():
+-            out = check_cmd_output('rustup', 'which', name,
+-                                   executable=prog).rstrip()
+-            # If for some reason the above failed to return something, keep the
+-            # PROG we found originally.
+-            if out:
+-                log.info('Actually using \'%s\'', out)
+-                return out
+-
+-            log.info('No `rustup which` output, using \'%s\'', prog)
+             return prog
+ 
+         (retcode, stdout, stderr) = get_cmd_output(prog, '+stable')
+@@ -218,6 +209,26 @@ def rust_supported_targets(rustc):
+     return data
+ 
+ 
++option(env='RUST_HOST',
++       nargs=1,
++       help='Define the system type for Rust performing the build')
++
++@depends('RUST_HOST')
++@checking('rust host', lambda host: host)
++def rust_host_env(value):
++    if value:
++        return value[0]
++
++option(env='RUST_TARGET',
++       nargs=1,
++       help='Define the system type for Rust where the resulting executables will be used')
++
++@depends('RUST_TARGET')
++@checking('rust target', lambda target: target)
++def rust_target_env(value):
++    if value:
++        return value[0]
++
+ @template
+ def rust_triple_alias(host_or_target, host_or_target_c_compiler):
+     """Template defining the alias used for rustc's --target flag.
+@@ -228,8 +239,9 @@ def rust_triple_alias(host_or_target, host_or_target_c_compiler):
+ 
+     host_or_target_str = {host: 'host', target: 'target'}[host_or_target]
+ 
+-    @depends(rustc, host_or_target, host_or_target_c_compiler,
+-             rust_supported_targets, arm_target, when=rust_compiler)
++    @depends(rustc, host_or_target, rust_host_env, rust_target_env,
++             c_compiler, rust_supported_targets, arm_target,
++             when=rust_compiler)
+     @checking('for rust %s triplet' % host_or_target_str)
+     @imports('os')
+     @imports(_from='mozbuild.configure.util', _import='LineIO')
+@@ -237,8 +249,14 @@ def rust_triple_alias(host_or_target, host_or_target_c_compiler):
+     @imports(_from='six', _import='ensure_binary')
+     @imports(_from='tempfile', _import='mkstemp')
+     @imports(_from='textwrap', _import='dedent')
+-    def rust_target(rustc, host_or_target, compiler_info,
+-                    rust_supported_targets, arm_target):
++    def rust_target(rustc, host_or_target, rust_host_env, rust_target_env,
++                    compiler_info, rust_supported_targets, arm_target):
++
++        specified_targets = {"host": rust_host_env, "target": rust_target_env}
++        specified_target = specified_targets[host_or_target_str]
++        if (specified_target):
++            return specified_target
++
+         # Rust's --target options are similar to, but not exactly the same
+         # as, the autoconf-derived targets we use.  An example would be that
+         # Rust uses distinct target triples for targetting the GNU C++ ABI

@@ -1,0 +1,22 @@
+From c5797daaddc1fd650eaba09c454a866daab291b2 Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Tue, 20 Oct 2020 08:00:41 -0400
+Subject: [PATCH] Force the correct target string with environment variable.
+
+Otherwise, the cc crate will emit incorrect --target compiler flags.
+---
+ mozglue/static/rust/build.rs | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mozglue/static/rust/build.rs b/mozglue/static/rust/build.rs
+index 5bc6bae40..75c2e65a2 100644
+--- a/mozglue/static/rust/build.rs
++++ b/mozglue/static/rust/build.rs
+@@ -26,6 +26,7 @@ fn main() {
+         }
+         path
+     };
++    env::set_var("TARGET", "x86_64-oe-linux");
+     let mut build = cc::Build::new();
+     build.cpp(true);
+     // For js-confdefs.h, see wrappers.cpp.

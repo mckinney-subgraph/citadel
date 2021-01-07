@@ -1,0 +1,31 @@
+commit 88652e61a4cfaf20130b73713468c8dc1dcf224a
+Author: Takuro Ashie <ashie@clear-code.com>
+Date:   Sun Jul 14 20:59:21 2019 +0900
+
+    Avoid running autoconf2.13
+    
+    Use pre-generated old-configure instead.
+    
+    Upstream-Status: Inappropriate [OE-specific]
+
+diff --git a/build/moz.configure/old.configure b/build/moz.configure/old.configure
+index 7286b23ce86a..87702b520806 100644
+--- a/build/moz.configure/old.configure
++++ b/build/moz.configure/old.configure
+@@ -20,6 +20,7 @@ option(env='AUTOCONF', nargs=1, help='Path to autoconf 2.13')
+ @imports(_from='os.path', _import='exists')
+ @imports('re')
+ def autoconf(mozconfig, autoconf):
++    return "autoconf2.13"
+     mozconfig_autoconf = None
+     if mozconfig['path']:
+         make_extra = mozconfig['make_extra']
+@@ -110,7 +110,7 @@ def prepare_configure(old_configure, mozillabuild, mozconfig, autoconf, build_en
+             old_configure = os.path.join(old_configure_dir, 'js', 'src',
+                                          os.path.basename(old_configure))
+ 
+-    refresh = True
++    refresh = False
+     if exists(old_configure):
+         mtime = getmtime(old_configure)
+         aclocal = os.path.join(build_env.topsrcdir, 'build', 'autoconf',

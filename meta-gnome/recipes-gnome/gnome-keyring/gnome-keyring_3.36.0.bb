@@ -16,7 +16,7 @@ DEPENDS = " \
     libgcrypt \
 "
 
-inherit gnomebase gsettings distro_features_check remove-libtool gettext upstream-version-is-even
+inherit gnomebase gsettings features_check remove-libtool gettext upstream-version-is-even
 
 REQUIRED_DISTRO_FEATURES = "x11"
 
@@ -33,6 +33,7 @@ EXTRA_OECONF = " \
 FILES_${PN} += " \
     ${datadir}/dbus-1/services \
     ${datadir}/p11-kit \
+    ${datadir}/xdg-desktop-portal \
     ${base_libdir}/security/*${SOLIBSDEV} \
     ${libdir}/pkcs11/gnome-keyring-pkcs11.so \
 "

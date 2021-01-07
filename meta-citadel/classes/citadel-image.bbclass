@@ -24,7 +24,7 @@ EOF
     ver=$(printf "%03d" ${CITADEL_IMAGE_VERSION})
 
     if [ "${CITADEL_IMAGE_TYPE}" = "kernel" ]; then
-        KERNEL_ID=$(cat ${DEPLOY_DIR_IMAGE}/kernel.id)
+        KERNEL_ID=$(generate_kernel_id)
         echo "kernel-version = \"${CITADEL_KERNEL_VERSION}\"" >> ${B}/mkimage.conf
         echo "kernel-id = \"${KERNEL_ID}\"" >> ${B}/mkimage.conf
         fname="citadel-kernel-${CITADEL_KERNEL_VERSION}-${CITADEL_IMAGE_CHANNEL}-${ver}.img"

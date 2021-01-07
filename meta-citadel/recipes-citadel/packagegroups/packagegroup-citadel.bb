@@ -9,4 +9,6 @@ RDEPENDS_${PN} = "\
     packagegroup-theme \
     citadel-tools \
     citadel-tools-realms \
+    citadel-tools-boot \
+    citadel-documentation \
 "

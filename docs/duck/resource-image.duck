@@ -1,0 +1,242 @@
+
+= Citadel Resource Images
+  [topic]
+@link[guide >index#internals]
+
+Resource images are disk image files that are mounted read-only to create
+the citadel filesystem.  The first block (4096 bytes) of the image file
+contains a header and immediately following the header is the raw disk
+image contents.
+
+The header contains information about the image including parameters for
+configuring dm-verity to enforce the immutability of the image.  The header
+also contains a public key signature over the image information so that
+the authenticity of the header information can be verified.
+
+The root filesystem of citadel is also distributed as a resource image, and
+this image will be installed to a disk partition for normal operation.
+
+Resource images other than the root filesystem are mounted by creating loop
+devices on the image file. Prior to mounting the image dm-verity is configured
+on the loop device or the rootfs partition.
+
+== Resource Image Types
+
+Currently the following image types are defined for use in Citadel:
+
+=== 1) Base Root Filesystem ("rootfs")
+
+The base rootfs image is the only image type which is installed to a
+partition.  It is mounted as the root of the Citadel filesystem.  When an
+image is installed on a partition the 4906 byte header block is stored in
+the last block (8 sectors) of the partition.
+
+Citadel uses two partitions (A & B) for the root filesystem. This allows
+updating one partition while the other one is being used. Then the system
+can be rebooted into the updated rootfs partition. If the system fails to
+boot after updating it will be reverted to use the working partition.
+
+=== 2) Kernel Image ("kernel")
+
+The kernel modules for the running kernel are stored in a resource image
+so that the root filesystem is independent from the running kernel.
+
+During boot, this image is mounted and the kernel modules and a bind mount
+is created over /usr/lib/modules on the Citadel root filesystem.
+
+=== 3) Extra Resource Image ("extra")
+
+This image type contains additional directories of files which are mounted
+during boot on the Citadel root filesystem. It contains files such as
+firmware files and desktop icons which occupy substantial space but do not
+need to be updated frequently.
+
+By placing these files into a separate image the size of the root filesystem
+image is reduced. This makes the more frequently updated rootfs image
+smaller.
+
+=== 4) Realm Filesystem Image ("realmfs")
+
+This type of image contains the entire root filesystem for running a realm
+container or VM. Unlike the other types of resource images, these images can
+be modified and then signed with keys controlled by the user. This allows
+updates and installation of software while still preserving the read-only
+property.
+
+=== Image Layout
+
+Each resource image file reserves an initial 4096 byte block where a header is
+stored. This is the maximum length of the header, which is generally much
+smaller than this size.
+
+Following the header is a raw disk filesystem image which may optionally be
+compressed with xz compression algorithm. The disk image filesystem is ext4,
+but this is an implementation detail which may change in the future. A header
+flag (FLAG_DATA_COMPRESSED) indicates if an image is compressed and if so the
+image must be decompressed before being used. Image updates are distributed in
+compressed form and are decompressed once during installation.
+
+When dm-verity is used a hash tree must be generated for the image. When an
+image is installed it is first decompressed and then the dm-verity hash data
+is generated. This hash data is stored in the image file immediately following
+the image data and the flag FLAG_HASH_TREE is set to indicate this data is
+present.
+
+Image file:
+[code]
+[[[
+    [ Header ][ Ext4 Disk Image ][ dm-verity hash data ]
+]]]
+
+Partition:
+
+[code]
+[[[
+    [ Ext4 Disk Image ][ dm-verity hash data ][ unused space ][ Header ]
+]]]
+
+== Image Header
+
+The image header contains the following fields.
+
+[table]
+[tr]
+- Field
+- Size
+- Content
+[tr]
+* MAGIC
+* 4 bytes
+* ('S', 'G', 'O', 'S')
+[tr]
+* status
+* 1 byte
+* Used by images installed to partition
+[tr]
+* flags
+* 1 byte
+* Various flag values
+[tr]
+* metainfo-len
+* 2 bytes
+* 16 bit big-endian length
+[tr]
+* metainfo
+* (metainfo-len) bytes
+* TOML document containing key-value pairs
+[tr]
+* signature
+* 64 bytes
+* ed25519 signature over metainfo field
+
+
+=== Header Fields
+
+==== MAGIC
+
+The initial 4 bytes are always set to the ascii bytes 'SGOS' so that a
+valid image file can easily be identified.
+
+==== status
+
+The `status` field is used only on base rootfs image installed on a partition.
+It must be set to 0 for all other images. The field is used to make decisions
+about which parition to attempt to boot.
+
+The status value is stored in the low nibble (4 bits) of this field and the
+high nibble is reserved for counting boot attempts in `STATUS_TRY_BOOT` state.
+
+The defined status values are:
+
+[table]
+[tr]
+- status
+- value
+- description
+[tr]
+* STATUS_INVALID
+* 0
+* Partition does not contain a valid image
+[tr]
+* STATUS_NEW
+* 1
+* Newly written partition which has not yet been booted
+[tr]
+* STATUS_TRY_BOOT
+* 2
+* Set when booting a partition for the first time
+[tr]
+* STATUS_GOOD
+* 3
+* Partition has been successfully booted at least once
+[tr]
+* STATUS_FAILED
+* 4
+* Partition has failed to boot
+[tr]
+* STATUS_BAD_SIG
+* 5
+* Signature verification on metainfo failed
+[tr]
+* STATUS_BAD_META
+* 6
+* Parsing metainfo field failed
+
+==== flags
+
+[table]
+[tr]
+- flag
+- value
+- description
+[tr]
+* FLAG_PREFERRED_BOOT
+* 0x01
+* Override boot choice to boot from this partition
+[tr]
+* FLAG_HASH_TREE
+* 0x02
+* Image contains an appended dm-verity hash tree
+[tr]
+* FLAG_DATA_COMPRESSED
+* 0x04
+* Image is compressed with xz
+
+==== metainfo-len
+
+Length in bytes of the `metainfo` field.
+
+Since header page has a fixed size of one block (4096 bytes), and all other 
+header fields have fixed sizes the maximum length of the `metainfo` field is
+4096 - (4 + 2 + 2 + 64) = 4024 bytes
+
+==== metainfo
+
+==== signature
+
+When the rootfs partition is chosen to mount, an attempt will be made to verify
+the signature before configuring dm-verity. If this signature verification
+fails, the partition status will be changed to `STATUS_BAD_SIG`
+
+
+=== Booting
+
+During boot of Citadel, the initramfs sets up the Citadel root filesystem. The
+filesystem is built by locating and mounting three components:
+
+  * Base root filesystem
+  * Kernel modules
+  * Extra resources
+
+The base root filesystem is stored on a partition unless running in certain
+special modes such as installer and live disk. During installation the same
+base root filesystem image is mounted from a loop mounted image file. This same
+file will eventually be written to a partition during installation.
+
+Kernel modules and extra resources are stored in file images which are
+loop mounted during boot.
+
+An additional type of resource image called a sealed application image exists
+for the creation of immutable application image filesystems.
+
+Resource images can optionally have dm-verity enabled when mounted.

@@ -1,4 +1,4 @@
-From 0300490d0d2f425d87a311b76d0b51b0e085f27a Mon Sep 17 00:00:00 2001
+From a2ea7fac46ea2b6599df0095223627b17181f390 Mon Sep 17 00:00:00 2001
 From: xSmurf <xsmurf@users.noreply.github.com>
 Date: Wed, 14 Nov 2018 01:47:43 -0500
 Subject: [PATCH] Disabled calendar events from user session...
@@ -8,10 +8,10 @@ Subject: [PATCH] Disabled calendar events from user session...
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/js/ui/sessionMode.js b/js/ui/sessionMode.js
-index aac29ae..4214372 100644
+index 2136e94..3f35ab2 100644
 --- a/js/ui/sessionMode.js
 +++ b/js/ui/sessionMode.js
-@@ -81,7 +81,7 @@ const _modes = {
+@@ -69,7 +69,7 @@ const _modes = {
  
      'user': {
          hasOverview: true,

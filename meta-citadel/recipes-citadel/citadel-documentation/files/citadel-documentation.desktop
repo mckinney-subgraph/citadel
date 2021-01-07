@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Citadel Documentation
+Keywords=documentation;information;manual;help;
+Categories=Core;Documentation;
+Icon=help-browser
+Exec=/usr/libexec/citadel-run yelp /opt/share/citadel-documentation
+Type=Application
+Terminal=false
+StartupNotify=true

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Citadel Installer sessions
+Comment=Session for the Citadel Installer
+Exec=gnome-session --session=citadel-installer

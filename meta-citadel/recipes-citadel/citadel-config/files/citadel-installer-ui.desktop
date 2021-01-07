@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Citadel Installer
+Comment=This session logs you into the Citadel Installer 
+Exec=/usr/libexec/citadel-installer-ui
+TryExec=/usr/libexec/citadel-installer-ui
+Icon=
+Type=Application
+

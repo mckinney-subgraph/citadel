@@ -1,0 +1,13 @@
+= Kernel Command Line Options
+  [topic]
+  @link[guide >index#internals]
+
+* citadel.noverity
+* citadel.nosignatures
+* citadel.install
+* citadel.overlay
+* citadel.channel
+* citadel.verbose
+* citadel.debug
+* citadel.sway
+

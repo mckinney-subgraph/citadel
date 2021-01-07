@@ -7,8 +7,10 @@ DEPENDS = "ell"
 
 SRC_URI = "git://git.kernel.org/pub/scm/network/wireless/iwd.git \
            file://0001-Remove-config-dir-from-unit-file.patch \
+           file://0002-arc4-implementation.patch \
            "
 SRCREV = "ef6084dcb4fe2e00327bb9c7b113ece204042c22"
+
 S = "${WORKDIR}/git"
 
 inherit autotools manpages pkgconfig python3native systemd

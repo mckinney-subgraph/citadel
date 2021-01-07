@@ -4,7 +4,7 @@ NO_RECOMMENDATIONS = "1"
 
 PACKAGE_INSTALL = "\
     citadel-initramfs \
-    citadel-tools \
+    citadel-tools-boot \
     cryptsetup \
     lvm2 \
     lvm2-udevrules \
@@ -15,9 +15,10 @@ PACKAGE_INSTALL = "\
     busybox \
     kbd \
     keymaps \
-    systemd-initrd \
+    systemd \
+    systemd-initramfs \
+    systemd-extra-utils \
     linux-firmware-i915 \
-    kernel-module-arc4 \
     kernel-module-ansi-cprng \
     kernel-module-apple-bl \
     kernel-module-apple-gmux \
@@ -25,7 +26,6 @@ PACKAGE_INSTALL = "\
     kernel-module-appletouch \
     kernel-module-bcm5974 \
     kernel-module-ccm \
-    kernel-module-cmac \
     kernel-module-crc32-pclmul \
     kernel-module-crc32c-intel \
     kernel-module-crct10dif-pclmul \
@@ -119,15 +119,114 @@ require ${THISDIR}/../../recipes-citadel/images/citadel-image.inc
 IMAGE_ROOTFS_SIZE = "8192"
 IMAGE_ROOTFS_EXTRA_SPACE = "0"
 
-ROOTFS_POSTPROCESS_COMMAND += "remove_blk_availability; append_initrd_release; "
+ROOTFS_POSTPROCESS_COMMAND += "remove_systemd_units; append_initrd_release; "
 
-remove_blk_availability() {
-    rm ${IMAGE_ROOTFS}${systemd_system_unitdir}/blk-availability.service
+SYSTEMD_UNITS = "\
+    basic.target \
+    citadel-install-rootfs-mount.service \
+    citadel-lvm-activate.service \
+    citadel-rootfs-mount.path \
+    citadel-rootfs-mount.service \
+    citadel-rootfs-setup.service \
+    cryptsetup-pre.target \
+    cryptsetup.target \
+    debug-shell.service \
+    default.target \
+    emergency.service \
+    emergency.target \
+    initrd-cleanup.service \
+    initrd-fs.target \
+    initrd-parse-etc.service \
+    initrd-root-fs.target \
+    initrd-switch-root.target \
+    initrd-switch-root.service \
+    initrd-udevadm-cleanup-db.service \
+    initrd.target \
+    kmod-static-nodes.service \
+    local-fs-pre.target \
+    local-fs.target \
+    paths.target \
+    plymouth-halt.service \
+    plymouth-kexec.service \
+    plymouth-poweroff.service \
+    plymouth-quit-wait.service \
+    plymouth-quit.service \
+    plymouth-read-write.service \
+    plymouth-reboot.service \
+    plymouth-start.service \
+    plymouth-switch-root.service \
+    poweroff.target \
+    reboot.target \
+    rescue.service \
+    rescue.target \
+    serial-getty@.service \
+    shutdown.target \
+    sigpwr.target \
+    slices.target \
+    sockets.target \
+    swap.target \
+    sysinit.target \
+    systemd-ask-password-console.path \
+    systemd-ask-password-console.service \
+    systemd-ask-password-plymouth.path \
+    systemd-ask-password-plymouth.service \
+    systemd-fsck-root.service \
+    systemd-fsck@.service \
+    systemd-journald-audit.socket \
+    systemd-journald.service \
+    systemd-journald.socket \
+    systemd-modules-load.service \
+    systemd-sysctl.service \
+    systemd-udev-settle.service \
+    systemd-udev-trigger.service \
+    systemd-udevd-control.socket \
+    systemd-udevd-kernel.socket \
+    systemd-udevd.service \
+    timers.target \
+    umount.target \
+"
+
+
+remove_systemd_wants() {
+    for path in ${IMAGE_ROOTFS}${systemd_system_unitdir}/*; do
+        if [ -d ${path} ]; then
+            [ -h ${path}/${1} ] && rm -v ${path}/${1}
+        fi
+    done
+
+    local wants_dir=${IMAGE_ROOTFS}${systemd_system_unitdir}/${1}.wants
+    [ -d ${wants_dir} ] && rm -rv ${wants_dir}
+    return 0
 }
 
-generate_kernel_id() {
-    sha256sum ${DEPLOY_DIR_IMAGE}/bzImage-intel-corei7-64.bin | cut -d' ' -f1
+remove_one_systemd_unit() {
+    local unit_path=${IMAGE_ROOTFS}${systemd_system_unitdir}/${1}
+
+    remove_systemd_wants ${1}
+
+    if [ -e ${unit_path} ]; then
+        rm ${unit_path}
+    else
+        echo "Cannot remove systemd unit ${1} from initramfs image because it does not exist"
+    fi
 }
+
+match_unit() {
+    for unit in ${SYSTEMD_UNITS}; do
+        [ ${unit} = ${1} ] && return 0
+    done
+    return 1
+}
+
+remove_systemd_units() {
+    for path in ${IMAGE_ROOTFS}${systemd_system_unitdir}/*; do
+        if [ ! -d ${path} ]; then
+            local unit_name=$(basename ${path})
+            match_unit ${unit_name} || remove_one_systemd_unit ${unit_name}
+        fi
+    done
+}
+
 
 append_initrd_release() {
     KERNEL_ID=$(generate_kernel_id)
@@ -135,5 +234,4 @@ append_initrd_release() {
 CITADEL_KERNEL_VERSION="${CITADEL_KERNEL_VERSION}"
 CITADEL_KERNEL_ID="${KERNEL_ID}"
 EOF
-    echo "${KERNEL_ID}" > ${DEPLOY_DIR_IMAGE}/kernel.id
 }

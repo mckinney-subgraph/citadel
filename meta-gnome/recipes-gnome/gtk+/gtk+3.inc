@@ -10,7 +10,7 @@ DEPENDS = "glib-2.0 cairo pango atk jpeg libpng gdk-pixbuf \
 
 LICENSE = "LGPLv2 & LGPLv2+ & LGPLv2.1+"
 
-inherit autotools gettext pkgconfig gtk-doc update-alternatives gtk-immodules-cache gsettings distro_features_check gobject-introspection
+inherit autotools gettext pkgconfig gtk-doc update-alternatives gtk-immodules-cache gsettings features_check gobject-introspection
 
 BBCLASSEXTEND = "native nativesdk"
 
@@ -102,6 +102,7 @@ FILES_${PN}_append = " ${bindir}/gtk-update-icon-cache-3.0 \
                ${libdir}/gtk-3.0/modules/*.so"
 
 FILES_${PN}-dev += " \
+                    ${datadir}/gtk-3.0/valgrind \
                     ${datadir}/gtk-3.0/gtkbuilder.rng \
                     ${datadir}/gtk-3.0/include \
                     ${datadir}/gettext/its \

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="realmfs">
+ <info>
+  <link type="guide" xref="index#user"/>
+  <desc>Realm root filesystem images</desc>
+ </info>
+ <title>RealmFS Images</title>
+ <p>A RealmFS image contains a root filesystem for one or more realm instances.
+ Similar to resource images, RealmFS images are signed and mounted with dm-verity
+ to prevent tampering with the data on the root filesystem such as the
+ installation of malware or backdoors. The keys used to sign RealmFS images are
+ controlled by the user which makes it possible to upgrade software and install
+ new packages on the image.</p>
+ <p>RealmFS images are always mounted as read-only and this property is enforced
+ with dm-verity. Since RealmFS images are immutable a single image can be shared
+ between multiple running realm instances. By default, when a realm is launched a
+ temporary overlay is added to the root filesystem so that changes can be
+ performed that will last only until the realm is stopped or restarted. This
+ allows experimenting with the system configuration or installing new software
+ temporarily. The root filesystem can then be reverted to the original state by
+ simply restarting the realm.</p>
+ <section>
+  <title>Updates</title>
+  <p>Since the root filesystem of realms are stored on read-only disk images,
+  packages cannot be permanently installed or upgraded in the usual way. Changes
+  to the root filesystem will succeed inside a realm, but these changes will be
+  lost as soon as the realm is stopped or restarted.</p>
+  <p>To make persistent changes to a RealmFS image, the image is first copied, then
+  changes are applied to the copy. After applying changes a new dm-verity hash
+  tree is generated for the image and the RealmFS image header is updated and
+  signed.</p>
+  <note style="advanced">
+   <p>The process of generating a signature and a dm-verity hash tree for a RealmFS image
+   after applying some changes such as updating packages is called <em style="strong">Sealing</em>
+   the image.</p>
+  </note>
+  <section>
+   <title>Apt-Cacher NG Realm</title>
+   <p>Upon booting a system utility realm is started which runs an Apt-Cacher NG
+   instance. Each realm is configured to use this realm as a proxy for package
+   installation.</p>
+   <code>/etc/apt/apt.conf.d/000apt-cacher-ng-proxy
+
+Acquire::http::Proxy "http://172.17.0.213:3142/";</code>
+   <p>The apt source lines use the special Apt-Cacher NG syntax.</p>
+   <code>/etc/apt/sources.list
+
+deb http://HTTPS///deb.debian.org/debian buster main contrib non-free</code>
+   <p>Using a package cache avoids downloading and storing packages multiple times
+   when updating multiple RealmFS images. It also makes it possible to download and
+   cache packages while connected to a network before booting the system into a
+   safe mode without enabling the network to perform upgrades of realm packages.</p>
+  </section>
+  <section>
+   <title>Updates (Container method)</title>
+   <p>First the RealmFS image is copied to a temporary file. On a filesystem such as
+   btrfs, the image file will be cloned as a reflink rather than copying the file.
+   The copy of the RealmFS will then be mounted as writable so that changes can be
+   made. A systemd-nspawn container is launched and a root shell opened so that the
+   user can update packages, install new software, or perform any other
+   modifications to the root filesystem.</p>
+   <p>Once the shell is exited a prompt asks the user if they would like to save the
+   current changes or discard them.  If the user chooses to save the changes, the
+   copied image is then sealed by generating a dm-verity hash tree and the header
+   of the image is signed with the user RealmFS sealing key.</p>
+  </section>
+  <section>
+   <title>Updates with pH Hypervisor</title>
+   <p>When a realm is launched with pH, the overlay is managed by the emulated disk
+   device of the hypervisor which tracks changes to blocks of the disk and stores
+   the changed blocks in memory. Since the hypervisor is tracking all of the
+   changes to the disk, it can also transparently apply the changes and generate a
+   new sealed RealmFS image and then discard the changed blocks and start directly
+   using the new image.</p>
+   <p>This process is initiated by the user when they decide they would like to commit
+   any changes they have made to the root filesystem in the running realm
+   permanently to the underlying RealmFS image.</p>
+   <steps>
+    <item>
+     <p>The user makes changes to the root filesystem of the realm and pH tracks the blocks that have changed.</p>
+    </item>
+    <item>
+     <p>A user request is made to pH to apply the changes to the RealmFS image.</p>
+    </item>
+    <item>
+     <p>pH opens a prompt on the desktop to ask the user to confirm that they really did make this request.</p>
+    </item>
+    <item>
+     <p>A copy (or reflink) of the current RealmFS is made, and pH applies the changed blocks to this copy.</p>
+    </item>
+    <item>
+     <p>The copy is then sealed with the RealmFS key of the user.</p>
+    </item>
+    <item>
+     <p>Now pH can quietly swap in the new version of the RealmFS image and discard all of the tracked block changes.</p>
+    </item>
+   </steps>
+  </section>
+ </section>
+ <section>
+  <title>Signing RealmFS Images</title>
+  <p>A secret key for signing RealmFS images is generated during installation and
+  stored on disk in an encrypted file called the User Keyring. During boot
+  when the user enters a passphrase to decrypt the disk, this passphrase is also
+  used to decrypt the keyring file and the public and secret key pair is
+  loaded into the kernel key storage.</p>
+  <p>The risk exists that an attacker who is able to compromise the kernel may
+  recover this secret key. This would allow the attacker to modify sealed RealmFS
+  images and install backdoors or other malware into realm root filesystems. Even
+  without obtaining the signing key an attacker who has compromised Citadel could
+  wait for the user to perform an update and make malicious changes at the same
+  time which the user will then sign.</p>
+  <p>For these reasons, it is also possible to configure the system so that only
+  the public key is retained in the kernel upon boot and the user must boot
+  into a special mode so that the private key is available to perform updates.</p>
+  <section>
+   <title>Safe Mode</title>
+   <p>If upgrades are performed in normal operating mode, an attacker who has
+   compromised citadel can persistently backdoor the upgraded realmfs images. 
+   Safe mode is a way to boot citadel without starting any realms or enabling the
+   network device. Since the integrity of the Citadel root filesystem is enforced
+   by dm-verity and no realms are running, even if the system had become compromised
+   at some point in the past it is assumed to now be in a safe state for performing
+   updates and signing them with the user sealing keys.</p>
+   <p>Since the network is not available in safe mode, the packages to be installed or
+   upgraded must be stored somewhere. By either performing the packge updates with
+   the <code>--download-only</code> flag or installing them to the temporary overlay of a realm
+   the user will cause them to be stored on the Apt-Cache NG service realm so that
+   they are available for install in safe mode.</p>
+  </section>
+ </section>
+ <section>
+  <title>Base RealmFS image</title>
+  <p>Citadel ships with a RealmFS image called <code>base-realmfs.img</code>. There is nothing
+  special about this image other than that it is initially signed by Subgraph until
+  the user modifies or updates it. During installation, a copy of this RealmFS is
+  created with the name <code>main-realmfs.img</code> and sealed with the newly generated
+  user keys.</p>
+ </section>
+</page>

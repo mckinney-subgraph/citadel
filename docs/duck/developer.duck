@@ -1,0 +1,26 @@
+= Developer Guide
+  [topic]
+@link[guide >index#internals]
+
+== Make Root Filesystem Writable
+
+Sometimes it can be useful to make changes directly to the citadel root filesystem to
+experiment with changes or to debug a problem.
+
+First $code(citadel.noverity) must be added to the kernel commandline. After booting with
+this command line option verify that dm-verity has been disabled with the $code(dmsetup)
+command.
+
+  [screen]
+  # dmsetup status rootfs
+  0 4194304 linear
+
+If the output displays $code(verity) instead of $code(linear) then dm-verity is enabled
+and the disk cannot be safely written to.
+
+Next remount the root filesystem with read-write flag.
+
+  [screen]
+  # mount -oremount,rw,noatime /
+
+== Debugging GNOME startup

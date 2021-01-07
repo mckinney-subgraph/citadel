@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="disk-layout">
+ <info>
+  <link type="guide" xref="index#internals"/>
+  <desc>A Hands-on guide the Citadel Disk and Filesystem Layout</desc>
+ </info>
+ <title>Disk Layout</title>
+ <section>
+  <title>Partitions</title>
+  <p>During installation, two partitions are created on the disk chosen as
+  the target of the install.</p>
+  <p>For example, if the installation disk is <code>/dev/sda</code>:</p>
+  <terms>
+   <item>
+    <title><code>/dev/sda1</code></title>
+    <p>512MB EFI System Partition</p>
+   </item>
+   <item>
+    <title><code>/dev/sda2</code></title>
+    <p>Remainder of the disk</p>
+   </item>
+  </terms>
+  <p>The partition layout of a running system can be viewed by running the <code>lsblk</code> command.</p>
+  <screen>citadel:~ # lsblk /dev/sda
+NAME                  MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+sda                     8:0    0   477G  0 disk
+├─sda1                  8:1    0   511M  0 part
+└─sda2                  8:2    0 476.5G  0 part
+  └─luks              252:0    0 476.4G  0 crypt
+    ├─citadel-rootfsA 252:1    0     2G  0 lvm
+    │ └─rootfs        252:4    0   354M  1 crypt /
+    ├─citadel-rootfsB 252:2    0     2G  0 lvm
+    └─citadel-storage 252:3    0 472.4G  0 lvm   /storage</screen>
+  <p>Several further block devices are created during boot when the main disk partition
+  is decrypted.</p>
+  <screen>sda
+├─sda1                  (a)  /boot partition
+└─sda2                  (b)  LUKS encrypted partition
+  └─citadel             (c)  LVM volume group
+    ├─citadel-rootfsA   (d1) rootfs partition A  (Read Only)
+    │ └─rootfs          (e)  The dm-verity device created for rootfsA
+    ├─citadel-rootfsB   (d2) rootfs partition B  (Read Only)
+    └─citadel-storage   (f)  mounted as /storage (Read/Write)</screen>
+  <terms>
+   <item>
+    <title><code>(a) /boot partition</code></title>
+    <p>EFI boot partition</p>
+   </item>
+   <item>
+    <title><code>(b) LUKS encrypted partition</code></title>
+    <p>Remainder of disk is an encrypted volume</p>
+   </item>
+   <item>
+    <title><code>(c) LVM volume group</code></title>
+    <p>Main partition contains several LVM volumes</p>
+   </item>
+   <item>
+    <title><code>(d) citadel-rootfs(A/B)</code></title>
+    <p>Two root partitions so one can be updated while other is in use.</p>
+   </item>
+   <item>
+    <title><code>(e) /dev/mapper/rootfs</code></title>
+    <p>verity mapper device for mounted root partion</p>
+   </item>
+   <item>
+    <title><code>(f) /dev/mapper/citadel-storage</code></title>
+    <p>The writable filesystem</p>
+   </item>
+  </terms>
+ </section>
+ <section>
+  <title>Citadel Filesystem Layout</title>
+  <code>/
+├─ /run/citadel/images/
+│  │
+│  ├─ modules.mountpoint/   (modules image mounted here)
+│  └─ extra.mountpoint/     (extra image mounted here)
+│
+└─ /storage
+   │
+   ├─ resources/dev         (resource images for channel 'dev')
+   │  │
+   │  ├─base-realmfs.img
+   │  └─main-realmfs.img
+   │
+   ├─ /realms               (/realms is a bind mount of /storage/realms)
+   │   ├─skel/
+   │   └─config
+   │
+   ├─ /realms/realmfs-images
+   │  │
+   │  ├─citadel-kernel-5.7-dev-001.img
+   │  └─citadel-extra-dev-001.img
+   │
+   └─ /realms/realm-main
+      ├─ home
+      └─ config</code>
+ </section>
+ <section>
+  <title>Resource Image Mounts</title>
+  <p>Resource images are mounted into the system by creating loop devices. These devices can be
+  viewed by running the 'losetup' command inside Citadel.</p>
+  <screen>citadel:~ # losetup -ONAME,OFFSET,RO,BACK-FILE
+NAME       OFFSET RO BACK-FILE
+/dev/loop1   4096  1 /storage/resources/dev/citadel-extra-dev-001.img
+/dev/loop2   4096  1 /storage/realms/realmfs-images/main-realmfs.img
+/dev/loop0   4096  1 /storage/resources/dev/citadel-kernel-5.0.6-dev-000.img</screen>
+  <p>Resource image files are protected against accidental changes or malicious tampering by
+  using dm-verity so that the kernel verifies a cryptographic checksum of each block loaded 
+  from the image.</p>
+  <p>You can view the verity device mapper node associated with each loop device with
+  the <code>lsblk</code> command.</p>
+  <screen>citadel:~ # lsblk /dev/loop0 /dev/loop1 /dev/loop4
+NAME                           MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+loop0                            7:0    0 116.9M  1 loop  
+└─verity-kernel                252:5    0   116M  1 crypt /run/citadel/images/kernel.mountpoint
+loop1                            7:1    0 938.9M  1 loop  
+└─verity-extra                 252:6    0 931.5M  1 crypt /run/citadel/images/extra.mountpoint
+loop2                            7:2    0     4G  1 loop  
+└─verity-realmfs-main-11922f31 252:9    0     4G  1 crypt /run/citadel/realmfs/realmfs-main-11922f31.mountpoint</screen>
+  <p>Parameters of each dm-verity instance can be viewed with the veritysetup command.</p>
+  <screen>citadel:~ # veritysetup status verity-kernel
+/dev/mapper/verity-kernel is active and is in use.
+  type:        VERITY
+  status:      verified
+  hash type:   1
+  data block:  4096
+  hash block:  4096
+  hash name:   sha256
+  salt:        fa430cb7887de60dca6fd1974868036ea39cf5017eb55f02e3a76f82a12a0431
+  data device: /dev/loop0
+  data loop:   /storage/resources/dev/citadel-kernel-5.0.6-dev-000.img
+  size:        237536 sectors
+  mode:        readonly
+  hash device: /dev/loop0
+  hash loop:   /storage/resources/dev/citadel-kernel-5.0.6-dev-000.img
+  hash offset: 237544 sectors</screen>
+  <p>When a resource image file is mounted, a file in the root directory called 'manifest' lists
+  bind mounts to perform to integrate the image into the Citadel root filesystem.</p>
+  <p>Each line of this file is a directory to bind mount from the mounted image to the root
+  filesystem. If a directory should be mounted to a location which is different than
+  the source directory the source and target directories are both listed on a single
+  line and separated by the ':' character. In the 'extra' image below, the directory
+  /usr/share from the resource image is mounted to /opt/share on the Citadel filesystem.</p>
+  <screen>citadel:~ # cat /run/citadel/images/kernel.mountpoint/manifest
+/usr/lib/modules
+
+citadel:~ # cat /run/citadel/images/extra.mountpoint/manifest
+/usr/lib/firmware
+/usr/share:/opt/share</screen>
+  <p>The citadel-image utility can be used to view the metainfo variables stored in the header
+  section of a resource image file.</p>
+  <screen>citadel:~ # citadel-image metainfo /storage/resources/dev/citadel-extra-dev-001.img
+image-type = "extra"
+channel = "dev"
+version = 1
+timestamp = "20190331172025"
+nblocks = 195924
+shasum = "04e6f58afa6f608aff2d6cbb47cbe704f8ab0995f4dfe8e1c03655dc9bb6635a"
+verity-salt = "7bf3eec3c51ffd2e82329a9fc6fe42915743874d7c5af43589e589c037ae81e5"
+verity-root = "b94eb3431c4fb95e5b9bd62b4505d089414ae660d75eee0fce54b8483d3f9571"
+
+citadel:~ # citadel-image metainfo /storage/resources/dev/citadel-kernel-5.0.6-dev-000.img 
+image-type = "kernel"
+kernel-version = "5.0.6"
+kernel-id = "36b7a960dcd51d1649f83a7361f9eb5c2af5741ce6cc53689b411347aa1298b6"
+channel = "dev"
+version = 1
+timestamp = "20190407002748"
+nblocks = 29692
+shasum = "c988bd7d468c409eb6cd3af8fa9e17b0a75a72d6ad765ad1749d15628a9096be"
+verity-salt = "fa430cb7887de60dca6fd1974868036ea39cf5017eb55f02e3a76f82a12a0431"
+verity-root = "f4c4fbaebb59d348bd44cfb1cdef54a813728aabc5acc439c2e739b63c1b8370"</screen>
+  <p>RealmFS images also have a resource image header with a slightly different set of
+  metainfo variables.</p>
+  <screen>citadel:~ # citadel-image metainfo /storage/realms/realmfs-images/main-realmfs.img
+image-type = "realmfs"
+realmfs-name = "main"
+nblocks = 1048575
+channel = "realmfs-user"
+verity-salt = "ad254e6dd385c0392ed8a6a41b849cfd4ef98ec3643e186feb011d5aa4f1d194"
+verity-root = "11922f311b5a9141d65b7ef82e1c9159d75e413d1b420a7e3302ec8ec0ad8593"</screen>
+ </section>
+</page>

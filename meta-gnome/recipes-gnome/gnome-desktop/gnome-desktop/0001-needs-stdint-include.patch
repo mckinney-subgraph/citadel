@@ -1,0 +1,12 @@
+diff --git a/libgnome-desktop/gnome-rr.h b/libgnome-desktop/gnome-rr.h
+index 111bab3f..f633a2d9 100644
+--- a/libgnome-desktop/gnome-rr.h
++++ b/libgnome-desktop/gnome-rr.h
+@@ -30,6 +30,7 @@
+ 
+ #include <glib.h>
+ #include <gdk/gdk.h>
++#include <stdint.h>
+ 
+ typedef struct GnomeRRScreenPrivate GnomeRRScreenPrivate;
+ typedef struct GnomeRROutput GnomeRROutput;

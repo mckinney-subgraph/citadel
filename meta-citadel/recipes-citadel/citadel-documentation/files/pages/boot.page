@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="boot">
+ <info>
+  <link type="guide" xref="index#internals"/>
+ </info>
+ <title>Booting Citadel </title>
+ <section>
+  <title>Disk Layout</title>
+  <p>When Citadel is installed two disk partitions are created on the target disk.</p>
+  <screen>sda                     8:0    0   477G  0 disk
+├─sda1                  8:1    0   511M  0 part
+└─sda2                  8:2    0 476.5G  0 part</screen>
+  <p>The first partition is an EFI boot partition and the second partition is LUKS encrypted
+  and contains multiple LVM volumes when decrypted.</p>
+  <screen>
+         /dev/sda1                               /dev/sda2
+
+    [EFI ESP Boot partition] [ LUKS encrypted partition filling remainder of disk ]
+                             .                                                    .
+                             .                                                    .
+                             .                       |                            .
+                             .                       |                            .
+                             .                       V                            .
+                             .                                                    .
+                               [  rootfsA  ] [  rootfsB  ] [   citadel-storage   ]
+</screen>
+  <p>There are three logical volumes. Two root filesystem partitions so that one partition
+  can be updated while the other one is in use, and the remaining space is contained
+  in a volume called 'storage'.</p>
+  <screen type="sh"># lvs
+LV      VG      Attr       LSize
+rootfsA citadel -wi-a-----   2.00g
+rootfsB citadel -wi-ao----   2.00g
+storage citadel -wi-ao---- 472.43g</screen>
+  <section>
+   <title>Bootloader</title>
+   <section>
+    <title>LUKS</title>
+    <p>The kernel initramfs has an /etc/crypttab file which guides the discovery of the LUKS partition.
+    The UUID of the LUKS partition is hardcoded to the value listed below. If citadel is installed
+    on more than one device on the system, the intended LUKS partition may not be chosen correctly.
+    This problem can be addressed by changing the UUID of other citadel LUKS partitions and passing
+    the UUID on kernel commandline to override /etc/crypttab.  See systemd-cryptsetup-generator(8).</p>
+    <screen type="sh"># cat /etc/crypttab
+luks UUID=683a17fc-4457-42cc-a946-cde67195a101 - discard</screen>
+   </section>
+   <section>
+    <title>Mounting rootfs</title>
+    <p>The initramfs boot stage is orchestrated by various systemd unit files which can be found
+    in the citadel source tree at:</p>
+    <screen>citadel/meta-citadel/recipes-initrd/citadel-initramfs</screen>
+    <p>The same kernel and initramfs is used for the installer image. One task of these unit files
+    is to set up a live mode boot when a certain kernel command line option is set. For a regular
+    boot, a pair of unit files will attempt to mount the root filesystem partition when it becomes
+    available:</p>
+    <screen>citadel-rootfs-mount.path
+citadel-rootfs-mount.service</screen>
+    <p>The .path unit triggers every time /dev/mapper changes and the corresponding .service unit is
+    activated only when all of the LVM volumes inside</p>
+    <screen>ConditionPathExists=/dev/mapper/citadel-rootfsA
+ConditionPathExists=/dev/mapper/citadel-rootfsB
+ConditionPathExists=/dev/mapper/citadel-storage</screen>
+   </section>
+  </section>
+ </section>
+</page>

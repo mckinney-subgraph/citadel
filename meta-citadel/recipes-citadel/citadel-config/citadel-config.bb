@@ -28,52 +28,49 @@ UDEV_RULES = "\
     file://udev/scsi-alpm.rules \
 "
 
-IPTABLES_RULES = "\
-    file://iptables/empty-filter.rules \
-    file://iptables/iptables.rules \
-"
-
 SRC_URI = "\
     file://locale.conf \
     file://environment.sh \
     file://fstab \
     file://sudo-citadel \
     file://citadel-ifconfig.sh \
-    file://citadel-setpassword.sh \
     file://00-storage-tmpfiles.conf \
-    file://NetworkManager.conf \
     file://share/dot.bashrc \
     file://share/dot.profile \
     file://share/dot.vimrc \
     file://polkit/citadel.rules \
-    file://iptables-flush.sh \
+    file://citadel-installer.session \
+    file://citadel-installer.json \
+    file://citadel-installer.desktop \
+    file://citadel-installer-ui.desktop \
     file://systemd/zram-swap.service \
-    file://systemd/iptables.service \
     file://systemd/sway-session-switcher.service \
     file://systemd/x11-session-switcher.service \
-    file://systemd/citadel-setpassword.service \
+    file://systemd/citadel-installer-backend.service \
+    file://systemd/installer-session-switcher.service \
+    file://systemd/user/gnome-session@citadel-installer.target.d/session.conf \
     file://skel/profile \
     file://skel/bashrc \
     file://skel/vimrc \
     file://apt-cacher-ng/acng.conf \
     file://apt-cacher-ng/security.conf \
+    file://iwd/main.conf \
     ${DEFAULT_REALM_UNITS} \
     ${MODPROBE_CONFIG} \
     ${SYSCTL_CONFIG} \
     ${UDEV_RULES} \
-    ${IPTABLES_RULES} \
 "
 
 USERADD_PACKAGES = "${PN}"
 USERADD_PARAM_${PN} = "-m -u 1000 -s /bin/bash citadel"
 INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
 
-# for citadel-ifconfig.sh citadel-setpassword.sh
-RDEPENDS_${PN} = "bash wireless-regdb-static"
+# for citadel-ifconfig.sh
+RDEPENDS_${PN} = "bash"
 
 inherit allarch systemd useradd
 
-SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path iptables.service sway-session-switcher.service x11-session-switcher.service citadel-setpassword.service"
+SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path sway-session-switcher.service x11-session-switcher.service citadel-installer-backend.service installer-session-switcher.service"
 
 do_install() {
     install -m 0755 -d ${D}/storage
@@ -84,30 +81,38 @@ do_install() {
     install -m 0755 -d ${D}${sysconfdir}/skel
     install -m 0755 -d ${D}${sysconfdir}/tmpfiles.d
     install -m 0755 -d ${D}${sysconfdir}/udev/rules.d
-    install -m 0755 -d ${D}${sysconfdir}/NetworkManager
+#    install -m 0755 -d ${D}${sysconfdir}/NetworkManager
     install -m 0755 -d ${D}${sysconfdir}/polkit-1/rules.d
     install -m 0755 -d ${D}${sysconfdir}/modprobe.d
     install -m 0755 -d ${D}${sysconfdir}/sudoers.d
-    install -m 0755 -d ${D}${datadir}/iptables
+    install -m 0755 -d ${D}${sysconfdir}/iwd
     install -m 0755 -d ${D}${datadir}/factory/skel
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager/system-connections
     install -m 0755 -d ${D}${datadir}/citadel
+    install -m 0755 -d ${D}${datadir}/gnome-session/sessions
+    install -m 0755 -d ${D}${datadir}/gnome-shell/modes
+    install -m 0755 -d ${D}${datadir}/applications
+    install -m 0755 -d ${D}${datadir}/wayland-sessions
 
     install -m 0644 ${WORKDIR}/locale.conf ${D}${sysconfdir}/locale.conf
     install -m 0644 ${WORKDIR}/environment.sh ${D}${sysconfdir}/profile.d/environment.sh
     install -m 0644 ${WORKDIR}/fstab ${D}${sysconfdir}/fstab
     install -m 0440 ${WORKDIR}/sudo-citadel ${D}${sysconfdir}/sudoers.d/citadel
     install -m 0644 ${WORKDIR}/00-storage-tmpfiles.conf ${D}${sysconfdir}/tmpfiles.d
-    install -m 0644 ${WORKDIR}/NetworkManager.conf ${D}${sysconfdir}/NetworkManager
+    #install -m 0644 ${WORKDIR}/NetworkManager.conf ${D}${sysconfdir}/NetworkManager
 
     install -d ${D}${systemd_system_unitdir}
+
     install -m 644 ${WORKDIR}/systemd/zram-swap.service ${D}${systemd_system_unitdir}
-    install -m 644 ${WORKDIR}/systemd/iptables.service ${D}${systemd_system_unitdir}
 
     install -m 644 ${WORKDIR}/systemd/sway-session-switcher.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/x11-session-switcher.service ${D}${systemd_system_unitdir}
-    install -m 644 ${WORKDIR}/systemd/citadel-setpassword.service ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/systemd/citadel-installer-backend.service ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/systemd/installer-session-switcher.service ${D}${systemd_system_unitdir}
+
+    install -d ${D}${systemd_user_unitdir}/gnome-session@citadel-installer.target.d
+    install -m 644 ${WORKDIR}/systemd/user/gnome-session@citadel-installer.target.d/session.conf ${D}${systemd_user_unitdir}/gnome-session@citadel-installer.target.d
 
     install -m 644 ${WORKDIR}/systemd/watch-run-user.path ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/watch-run-user.service ${D}${systemd_system_unitdir}
@@ -123,14 +128,14 @@ do_install() {
 
     install -m 0644 ${WORKDIR}/udev/citadel-network.rules ${D}${sysconfdir}/udev/rules.d/
     install -m 0755 ${WORKDIR}/citadel-ifconfig.sh ${D}${libexecdir}
-    install -m 0754 ${WORKDIR}/citadel-setpassword.sh ${D}${libexecdir}
 
     install -m 0644 ${WORKDIR}/udev/pci-pm.rules ${D}${sysconfdir}/udev/rules.d/
     install -m 0644 ${WORKDIR}/udev/scsi-alpm.rules ${D}${sysconfdir}/udev/rules.d/
 
-    install -m 0644 ${WORKDIR}/iptables/iptables.rules ${D}${datadir}/iptables/
-    install -m 0644 ${WORKDIR}/iptables/empty-filter.rules ${D}${datadir}/iptables/
-    install -m 0644 ${WORKDIR}/iptables-flush.sh ${D}${datadir}/iptables/
+    install -m 0644 ${WORKDIR}/citadel-installer.session ${D}${datadir}/gnome-session/sessions/
+    install -m 0644 ${WORKDIR}/citadel-installer.json ${D}${datadir}/gnome-shell/modes/
+    install -m 0644 ${WORKDIR}/citadel-installer-ui.desktop ${D}${datadir}/applications/
+    install -m 0644 ${WORKDIR}/citadel-installer.desktop ${D}${datadir}/wayland-sessions/
 
     install -m 0644 ${WORKDIR}/share/dot.bashrc ${D}${datadir}/factory/skel/.bashrc
     install -m 0644 ${WORKDIR}/share/dot.profile ${D}${datadir}/factory/skel/.profile
@@ -139,6 +144,8 @@ do_install() {
     install -m 0644 ${WORKDIR}/polkit/citadel.rules ${D}${sysconfdir}/polkit-1/rules.d/
 
     install -m 0644 ${WORKDIR}/modprobe.d/audio_powersave.conf ${D}${sysconfdir}/modprobe.d/
+
+    install -m 0644 ${WORKDIR}/iwd/main.conf ${D}${sysconfdir}/iwd/
 
     install -d ${D}${datadir}/apt-cacher-ng/conf
     install -m 0644 ${WORKDIR}/apt-cacher-ng/acng.conf ${D}${datadir}/apt-cacher-ng/conf/
