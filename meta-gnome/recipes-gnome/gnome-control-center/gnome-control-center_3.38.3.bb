@@ -32,8 +32,7 @@ DEPENDS = " \
 
 REQUIRED_DISTRO_FEATURES += " pulseaudio systemd x11"
 
-SRC_URI[archive.md5sum] = "19ab78acfb6142974921bd8b5bf66937"
-SRC_URI[archive.sha256sum] = "8d90006c610f6fccb3cddbcf413b1bc4137fb4977b901a3989420fe160082026"
+SRC_URI[archive.sha256sum] = "3b4a4b18ba91803dce133f443f9d1d1f5a1b6c26b7727876e0a699349f5696e3"
 
 
 #

@@ -9,8 +9,7 @@ REQUIRED_DISTRO_FEATURES = "x11 systemd pam"
 
 WARN_QA_remove = "unknown-configure-option"
 
-SRC_URI[archive.md5sum] = "a12f98e36f4cfc4b4f968c35edc6f778"
-SRC_URI[archive.sha256sum] = "b789e3296463c4cbfa329ad1724df38439c3e6d7537a01025cd8f2fec8c90bb4"
+SRC_URI[archive.sha256sum] = "5345b418cb12a972955ce5cceaed6662480027336b5c51daea5730575b621ced"
 
 SRC_URI = "${GNOME_MIRROR}/${GNOMEBN}/${@gnome_verdir("${PV}")}/${GNOMEBN}-${PV}.tar.${GNOME_COMPRESS_TYPE};name=archive \
            file://0001-Disabled-calendar-events-from-user-session.patch \
