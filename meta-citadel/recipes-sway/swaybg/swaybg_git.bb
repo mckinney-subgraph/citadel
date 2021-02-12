@@ -14,6 +14,6 @@ SRCREV = "a8f109af90353369e7e2e689efe8ce06eb9c60ac"
 
 S = "${WORKDIR}/git"
 
-DEPENDS = "wayland wayland-native wayland-protocols cairo"
+DEPENDS = "wayland wayland-native wayland-protocols cairo gdk-pixbuf"
 
 

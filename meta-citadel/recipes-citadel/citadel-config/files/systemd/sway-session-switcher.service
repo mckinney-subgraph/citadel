@@ -1,9 +1,8 @@
 [Unit]
 Description=Sway Session Switcher
 After=accounts-daemon.service
-Wants=accounts-daemon.service
-
-ConditionKernelCommandLine=|citadel.sway
+Before=gdm.service
+ConditionKernelCommandLine=citadel.sway
 
 [Service]
 Type=oneshot
