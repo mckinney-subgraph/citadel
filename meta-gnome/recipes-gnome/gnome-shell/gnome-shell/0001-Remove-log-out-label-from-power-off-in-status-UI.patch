@@ -1,0 +1,22 @@
+From 38a41a143b97b7dcf0512d6509e61d11582e681d Mon Sep 17 00:00:00 2001
+From: David McKinney <mckinney@subgraph.com>
+Date: Fri, 12 Feb 2021 13:58:36 +0000
+Subject: [PATCH] Remove log out label from power off in status UI
+
+---
+ js/ui/status/system.js | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/js/ui/status/system.js b/js/ui/status/system.js
+index 6f71109..b96780c 100644
+--- a/js/ui/status/system.js
++++ b/js/ui/status/system.js
+@@ -113,7 +113,7 @@ class Indicator extends PanelMenu.SystemIndicator {
+             bindFlags);
+ 
+         this._sessionSubMenu = new PopupMenu.PopupSubMenuMenuItem(
+-            _('Power Off / Log Out'), true);
++            _('Power Off'), true);
+         this._sessionSubMenu.icon.icon_name = 'system-shutdown-symbolic';
+ 
+         item = new PopupMenu.PopupMenuItem(_('Suspend'));

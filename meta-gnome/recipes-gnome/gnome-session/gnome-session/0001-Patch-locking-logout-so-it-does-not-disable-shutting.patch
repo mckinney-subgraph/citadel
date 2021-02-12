@@ -1,0 +1,68 @@
+From 77e6fdd36bdc562e42da57c5a753b885d57eea85 Mon Sep 17 00:00:00 2001
+From: David McKinney <mckinney@subgraph.com>
+Date: Fri, 12 Feb 2021 13:57:01 +0000
+Subject: [PATCH] Patch locking logout so it does not disable shutting down
+
+---
+ gnome-session/gsm-manager.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/gnome-session/gsm-manager.c b/gnome-session/gsm-manager.c
+index 6839a02..4c2e862 100644
+--- a/gnome-session/gsm-manager.c
++++ b/gnome-session/gsm-manager.c
+@@ -553,10 +553,10 @@ end_phase (GsmManager *manager)
+         case GSM_MANAGER_PHASE_APPLICATION:
+                 break;
+         case GSM_MANAGER_PHASE_RUNNING:
+-                if (_log_out_is_locked_down (manager)) {
++                /*if (_log_out_is_locked_down (manager)) {
+                         g_warning ("Unable to logout: Logout has been locked down");
+                         start_next_phase = FALSE;
+-                }
++                }*/
+                 break;
+         case GSM_MANAGER_PHASE_QUERY_END_SESSION:
+                 if (!do_query_end_session_exit (manager))
+@@ -2555,13 +2555,13 @@ gsm_manager_shutdown (GsmExportedManager    *skeleton,
+                 return TRUE;
+         }
+ 
+-        if (_log_out_is_locked_down (manager)) {
++        /*if (_log_out_is_locked_down (manager)) {
+                 g_dbus_method_invocation_return_error (invocation,
+                                                        GSM_MANAGER_ERROR,
+                                                        GSM_MANAGER_ERROR_LOCKED_DOWN,
+                                                        "Logout has been locked down");
+                 return TRUE;
+-        }
++        }*/
+ 
+         task = g_task_new (manager, manager->priv->end_session_cancellable, (GAsyncReadyCallback) complete_end_session_task, invocation);
+ 
+@@ -2590,13 +2590,13 @@ gsm_manager_reboot (GsmExportedManager    *skeleton,
+                 return TRUE;
+         }
+ 
+-        if (_log_out_is_locked_down (manager)) {
++        /*if (_log_out_is_locked_down (manager)) {
+                 g_dbus_method_invocation_return_error (invocation,
+                                                        GSM_MANAGER_ERROR,
+                                                        GSM_MANAGER_ERROR_LOCKED_DOWN,
+                                                        "Logout has been locked down");
+                 return TRUE;
+-        }
++        }*/
+ 
+         task = g_task_new (manager, manager->priv->end_session_cancellable, (GAsyncReadyCallback) complete_end_session_task, invocation);
+ 
+@@ -2617,8 +2617,7 @@ gsm_manager_can_shutdown (GsmExportedManager    *skeleton,
+ 
+         g_debug ("GsmManager: CanShutdown called");
+ 
+-        shutdown_available = !_log_out_is_locked_down (manager) &&
+-                (gsm_system_can_stop (manager->priv->system)
++        shutdown_available = (gsm_system_can_stop (manager->priv->system)
+                  || gsm_system_can_restart (manager->priv->system)
+                  || gsm_system_can_suspend (manager->priv->system)
+                  || gsm_system_can_hibernate (manager->priv->system));

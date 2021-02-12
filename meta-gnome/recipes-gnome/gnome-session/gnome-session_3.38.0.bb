@@ -24,7 +24,10 @@ REQUIRED_DISTRO_FEATURES = "x11 systemd pam gobject-introspection-data"
 
 SRC_URI[archive.md5sum] = "736024b46e2542b9b68adaa43f754f49"
 SRC_URI[archive.sha256sum] = "7bcc0eb2cdba4b3f6d1b459b3a30873b7bb65b383c1f6a5f63c3e3b5c7943d67"
-SRC_URI += " file://0001-Disable-sharing-and-usb-protection-add-systemd-to-de.patch"
+SRC_URI += " \ 
+    file://0001-Patch-locking-logout-so-it-does-not-disable-shutting.patch \
+    file://0001-Disable-sharing-and-usb-protection-add-systemd-to-de.patch \
+"
 
 EXTRA_OEMESON += "-Dsystemd=true -Dsystemd_journal=true -Ddocbook=false -Dman=false"
 FILES_${PN} += " \

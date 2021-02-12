@@ -18,7 +18,7 @@ autorun-x-content-start-app=[]
 
 [org.gnome.desktop.lockdown]
 disable-user-switching=true
-
+disable-log-out=true
 
 [org.gnome.desktop.interface]
 cursor-theme='Paper'
@@ -28,6 +28,9 @@ clock-format='12h'
 
 [org.gnome.shell]
 enabled-extensions=['dash-to-panel@jderose9.github.com']
+
+[org.gnome.settings-daemon.plugins.media-keys]
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']
 
 [org.gnome.settings-daemon.plugins.xsettings]
 antialiasing='rgba'
