@@ -1,6 +1,6 @@
 
 : ${DEBIAN_MIRROR:="https://deb.debian.org/debian"}
-: ${DEBIAN_RELEASE:="buster"}
+: ${DEBIAN_RELEASE:="bullseye"}
 
 BASE_PACKAGES="iproute2 less xz-utils sudo dbus libpam-systemd openssh-client packagekit-gtk3-module libcanberra-gtk3-module libpulse0 fonts-roboto-hinted bash-completion"
 
