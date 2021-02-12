@@ -8,6 +8,8 @@ LIC_FILES_CHKSUM = "file://LICENSES/MIT.txt;md5=38aa75cf4c4c87f018227d5ec9638d75
                     file://LICENSES/CC-BY-SA-4.0.txt;md5=4b39cb11ffa11c92d3f7a3431390e0d9"
 
 SRC_URI = "git://github.com/cyclopsian/wdisplays;protocol=https"
+SRC_URI += "file://use_correct_versions.patch"
+
 PV = "1.0+git${SRCPV}"
 PR = "r0"
 
