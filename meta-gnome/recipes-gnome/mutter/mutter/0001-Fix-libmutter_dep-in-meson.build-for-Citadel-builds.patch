@@ -1,0 +1,21 @@
+From fa052377263464109035564b17cfa2aa76e35016 Mon Sep 17 00:00:00 2001
+From: David McKinney <mckinney@subgraph.com>
+Date: Fri, 12 Feb 2021 13:53:31 +0000
+Subject: [PATCH] Fix libmutter_dep in meson.build for Citadel builds
+
+---
+ src/meson.build | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/meson.build b/src/meson.build
+index e7c99ca..8fe484e 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -955,6 +955,7 @@ libmutter = shared_library(libmutter_name,
+ libmutter_dep = declare_dependency(
+   link_with: libmutter,
+   include_directories: mutter_includes,
++  sources: mutter_built_sources,
+   dependencies: [
+     libmutter_cogl_dep,
+     libmutter_clutter_dep,

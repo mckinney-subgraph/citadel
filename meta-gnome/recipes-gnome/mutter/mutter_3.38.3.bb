@@ -35,6 +35,7 @@ DEPENDS = " \
     gobject-introspection-native \
 "
 
+SRC_URI += " file://0001-Fix-libmutter_dep-in-meson.build-for-Citadel-builds.patch"
 RDEPENDS_${PN} += " xserver-xorg-xwayland zenity"
 
 GNOMEBASEBUILDCLASS = "meson"
