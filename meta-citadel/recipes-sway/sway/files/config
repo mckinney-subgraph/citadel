@@ -27,7 +27,7 @@ set $lockscreen /usr/bin/swaylock --scaling=fill -i /usr/share/backgrounds/gnome
 set $screenshot /usr/bin/grim `/usr/bin/mktemp -u /storage/realms/Shared/$(/usr/bin/date +"%Y-%m-%d_%T_XXXXXX_screenshot.png")`
 set $screenshot_region /usr/bin/grim -g "$(/usr/bin/slurp -d)" `/usr/bin/mktemp -u /storage/realms/Shared/$(/usr/bin/date +"%Y-%m-%d_%T_XXXXXX_screenshot.png")`
 
-set $menu dbus-launch /usr/bin/sgmenu
+set $menu /usr/bin/sgmenu
 set $realmsui /usr/libexec/citadel-realms-ui
 
 ### Output configuration
