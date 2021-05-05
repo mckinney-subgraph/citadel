@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch /run/NetworkManager
+
+[Path]
+PathChanged=/run/NetworkManager
+MakeDirectory=true
+
+[Install]
+WantedBy=multi-user.target

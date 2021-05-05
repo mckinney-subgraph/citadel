@@ -1,4 +1,4 @@
-CONFFILES_${PN} += "${sysconfdir}/machine-id"
+FILES_${PN} += "${sysconfdir}/machine-id"
 
 do_install_append() {
     install -d ${D}${sysconfdir}

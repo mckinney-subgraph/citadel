@@ -6,7 +6,7 @@ RDEPENDS_${PN}_remove = "update-rc.d"
 
 ALTERNATIVE_${PN}_remove = "resolv-conf"
 
-GROUPADD_PARAM_${PN} += "; -r kvm"
+GROUPADD_PARAM_${PN} += "-r wheel; -r kvm; -r render"
 PACKAGECONFIG = "\
     efi acl ldconfig pam usrmerge rfkill backlight binfmt hostnamed localed logind machined myhostname \
     nss polkit randomseed seccomp timedated utmp timesyncd kmod sysusers gshadow cryptsetup \

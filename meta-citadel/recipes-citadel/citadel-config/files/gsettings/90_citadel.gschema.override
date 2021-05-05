@@ -3,7 +3,7 @@ natural-scroll=true
 tap-to-click=true
 
 [org.gnome.desktop.background]
-picture-uri='file:///usr/share/backgrounds/gnome/Icetwigs.jpg'
+picture-uri='file:///usr/share/backgrounds/gnome/Loveles.jpg'
 
 [org.gnome.desktop.screensaver]
 picture-uri='file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'
@@ -40,7 +40,6 @@ antialiasing='rgba'
 #
 [org.gnome.settings-daemon.plugins.power]
 sleep-inactive-ac-timeout=0
-
 
 [org.gnome.desktop.input-sources]
 xkb-options=['ctrl:nocaps']

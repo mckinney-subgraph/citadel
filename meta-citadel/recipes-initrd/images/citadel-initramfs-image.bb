@@ -76,7 +76,6 @@ PACKAGE_INSTALL = "\
     kernel-module-hid-sensor-hub \
     kernel-module-hid-speedlink \
     kernel-module-hid-uclogic \
-    kernel-module-i2c-hid \
     kernel-module-intel-hid \
     kernel-module-intel-ish-ipc \
     kernel-module-intel-ishtp \

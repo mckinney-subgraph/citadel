@@ -51,9 +51,9 @@ index d86879a..c23ab0b 100644
  gdk_x11_dep = dependency('gdk-x11-3.0')
  gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0')
 @@ -134,7 +134,7 @@ endif
+ 
  mutter_typelibdir = mutter_dep.get_pkgconfig_variable('typelibdir')
  python = find_program('python3')
- sassc = find_program('sassc')
 -gjs = find_program('gjs')
 +gjs = '/usr/bin/gjs'
  

@@ -26,12 +26,11 @@ do_compile() {
 do_install() {
     install -d ${D}${datadir}/glib-2.0/schemas
     install -d ${D}${sysconfdir}/skel/.config/dconf
-    install -m 0755 -d ${D}${datadir}/factory/skel
-    install -m 0755 -d ${D}${datadir}/factory/skel/.config/dconf
+    install -m 0755 -d ${D}${datadir}/factory/storage/citadel-state/citadel-dconf
 
     install -m 644 ${S}/gsettings/90_citadel.gschema.override ${D}${datadir}/glib-2.0/schemas
     install -m 644 ${WORKDIR}/dconf-output/user ${D}${sysconfdir}/skel/.config/dconf
-    install -m 644 ${WORKDIR}/dconf-output/citadel ${D}${datadir}/factory/skel/.config/dconf/user
+    install -m 644 ${WORKDIR}/dconf-output/citadel ${D}${datadir}/factory/storage/citadel-state/citadel-dconf/user
 }
 
 FILES_${PN} = "/"

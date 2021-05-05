@@ -1,0 +1,20 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 29bbf8f..5aefc28 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -49,13 +49,11 @@ opt-level = 1
+ rpath = false
+ lto = false
+ debug-assertions = true
+-panic = "abort"
+ 
+ [profile.release]
+ opt-level = 2
+ rpath = false
+ debug-assertions = false
+-panic = "abort"
+ 
+ [patch.crates-io]
+ packed_simd = { git = "https://github.com/hsivonen/packed_simd", rev="3541e3818fdc7c2a24f87e3459151a4ce955a67a" }
+
+

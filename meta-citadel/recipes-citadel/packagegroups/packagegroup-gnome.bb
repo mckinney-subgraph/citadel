@@ -18,7 +18,6 @@ RDEPENDS_${PN} = "\
     mutter \
     gjs \
     gvfs \
-    gnome-keyring \
     gnome-session \
     gnome-shell \
     hicolor-icon-theme \

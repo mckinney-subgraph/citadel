@@ -9,6 +9,7 @@ SRC_URI = "https://download.gnome.org/teams/releng/tarballs-needing-help/mozjs/m
            file://0001-Force-the-correct-target-string-with-environment-var.patch \
            file://0003-Set-rust-host-and-target-correctly.patch \
            file://0004-Do-not-add-RequiredDefines.h-here-instead-add-to-gjs.patch \
+           file://0005-Remove-Abort-Panic-Strategy.patch \
            "
 
 SRC_URI[md5sum] = "09bf510150144238dd31f7f4e1582cf8"
@@ -16,22 +17,17 @@ SRC_URI[sha256sum] = "78d762012be9eb460b5805da4f919d1a12b15f4040f126c98a42c4ddda
 S = "${WORKDIR}/mozjs-78.0.1gnome"
 
 inherit autotools pkgconfig perlnative python3native
-inherit rust-common 
+inherit rust
 inherit features_check 
 CONFLICT_DISTRO_FEATURES_mipsarchn32 = "ld-is-gold"
 TOOLCHAIN = "clang"
 
 DEPENDS += "nspr zlib rust-native cargo-native clang-native cbindgen-native nasm-native yasm-native python3"
 
-# Disable null pointer optimization in gcc >= 6
-# https://bugzilla.redhat.com/show_bug.cgi?id=1328045
-CFLAGS += "-fno-tree-vrp -fno-strict-aliasing -fno-delete-null-pointer-checks"
-CXXFLAGS += "-fno-tree-vrp -fno-strict-aliasing -fno-delete-null-pointer-checks"
-
 # nspr's package-config is ignored so set libs manually
 EXTRA_OECONF = " \
     --target=${TARGET_SYS} \
-    --host=${BUILD_SYS} \
+    --host=${HOST_SYS} \
     --prefix=${prefix} \
     --libdir=${libdir} \
     --disable-tests \
@@ -48,15 +44,14 @@ EXTRA_OEMAKE_task-install += "STATIC_LIBRARY_NAME=js_static"
 
 
 export TMP="${B}"
-export RUSTC="${WORKDIR}/recipe-sysroot-native/usr/bin/rustc"
 export RUST_HOST="${BUILD_SYS}"
-export RUST_TARGET="${RUST_TARGET_SYS}"
+export RUST_TARGET="${TARGET_SYS}"
+export RUSTFLAGS=" -L ${STAGING_LIBDIR}/rust"
 export RUST_TARGET_PATH="${STAGING_LIBDIR_NATIVE}/rustlib"
 export BINDGEN_MFLOAT="${@bb.utils.contains('TUNE_CCARGS_MFLOAT', 'hard', '-mfloat-abi=hard', '', d)}"
 export BINDGEN_CFLAGS="--target=${RUST_TARGET_SYS} --sysroot=${RECIPE_SYSROOT} ${BINDGEN_MFLOAT}"
 export INSTALL_SDK="0"
 export STAGING_LIBDIR
-export NO_RUST_PANIC_HOOK="1"
 
 #
 # Silence a host leak while linking native binary (nsinstall_real) used during the
@@ -73,7 +68,7 @@ export NO_RUST_PANIC_HOOK="1"
 #        warning: library search path "/usr/lib/gcc/x86_64-linux-gnu/9/../../../lib64" is unsafe for cross-compilation
 #        warning: library search path "/usr/lib/gcc/x86_64-linux-gnu/9/../../.." is unsafe for cross-compilation
 #
-WARN_QA_remove = "compile-host-path"
+ERROR_QA_remove = "compile-host-path"
 
 setup_pythonpath() {
     export SHELL="/bin/sh"

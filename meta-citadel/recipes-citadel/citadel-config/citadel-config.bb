@@ -25,7 +25,6 @@ SYSCTL_CONFIG = "\
 UDEV_RULES = "\
     file://udev/citadel-network.rules \
     file://udev/pci-pm.rules \
-    file://udev/scsi-alpm.rules \
 "
 DEFAULT_PASSWORD = "\
     file://citadel-setpassword.sh \
@@ -60,6 +59,7 @@ SRC_URI = "\
     file://apt-cacher-ng/acng.conf \
     file://apt-cacher-ng/security.conf \
     file://iwd/main.conf \
+    file://pulse/cookie \
     ${DEFAULT_REALM_UNITS} \
     ${MODPROBE_CONFIG} \
     ${SYSCTL_CONFIG} \
@@ -89,12 +89,14 @@ do_install() {
     install -m 0755 -d ${D}${sysconfdir}/skel/.config/nvim
     install -m 0755 -d ${D}${sysconfdir}/tmpfiles.d
     install -m 0755 -d ${D}${sysconfdir}/udev/rules.d
-#    install -m 0755 -d ${D}${sysconfdir}/NetworkManager
     install -m 0755 -d ${D}${sysconfdir}/polkit-1/rules.d
     install -m 0755 -d ${D}${sysconfdir}/modprobe.d
     install -m 0755 -d ${D}${sysconfdir}/sudoers.d
     install -m 0755 -d ${D}${sysconfdir}/iwd
-    install -m 0755 -d ${D}${datadir}/factory/skel
+    install -m 0755 -d ${D}${datadir}/factory/home/root
+    install -m 0755 -d ${D}${datadir}/factory/home/citadel
+    install -m 0755 -d ${D}${datadir}/factory/home/citadel/.local/share/applications
+    install -m 0755 -d ${D}${datadir}/factory/home/citadel/.config/pulse
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager/system-connections
     install -m 0755 -d ${D}${datadir}/citadel
@@ -141,16 +143,28 @@ do_install() {
     install -m 0755 ${WORKDIR}/citadel-ifconfig.sh ${D}${libexecdir}
 
     install -m 0644 ${WORKDIR}/udev/pci-pm.rules ${D}${sysconfdir}/udev/rules.d/
-    install -m 0644 ${WORKDIR}/udev/scsi-alpm.rules ${D}${sysconfdir}/udev/rules.d/
 
     install -m 0644 ${WORKDIR}/citadel-installer.session ${D}${datadir}/gnome-session/sessions/
     install -m 0644 ${WORKDIR}/citadel-installer.json ${D}${datadir}/gnome-shell/modes/
     install -m 0644 ${WORKDIR}/citadel-installer-ui.desktop ${D}${datadir}/applications/
     install -m 0644 ${WORKDIR}/citadel-installer.desktop ${D}${datadir}/wayland-sessions/
 
-    install -m 0644 ${WORKDIR}/share/dot.bashrc ${D}${datadir}/factory/skel/.bashrc
-    install -m 0644 ${WORKDIR}/share/dot.profile ${D}${datadir}/factory/skel/.profile
-    install -m 0644 ${WORKDIR}/share/dot.vimrc ${D}${datadir}/factory/skel/.vimrc
+    install -m 0644 ${WORKDIR}/share/dot.bashrc ${D}${datadir}/factory/home/root/.bashrc
+    install -m 0644 ${WORKDIR}/share/dot.profile ${D}${datadir}/factory/home/root/.profile
+    install -m 0644 ${WORKDIR}/share/dot.vimrc ${D}${datadir}/factory/home/root/.vimrc
+
+    install -m 0644 ${WORKDIR}/share/dot.bashrc ${D}${datadir}/factory/home/citadel/.bashrc
+    install -m 0644 ${WORKDIR}/share/dot.profile ${D}${datadir}/factory/home/citadel/.profile
+    install -m 0644 ${WORKDIR}/share/dot.vimrc ${D}${datadir}/factory/home/citadel/.vimrc
+
+
+    # To avoid these warnings:
+    #
+    #     [pulseaudio] authkey.c: Failed to open cookie file '/home/citadel/.config/pulse/cookie': No such file or directory
+    #
+
+    install -m 0600 ${WORKDIR}/pulse/cookie ${D}${datadir}/factory/home/citadel/.config/pulse/cookie
+
 
     install -m 0644 ${WORKDIR}/polkit/citadel.rules ${D}${sysconfdir}/polkit-1/rules.d/
 

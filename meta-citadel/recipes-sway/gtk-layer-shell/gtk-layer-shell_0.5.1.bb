@@ -9,6 +9,7 @@ LIC_FILES_CHKSUM = "file://LICENSE_LGPL.txt;md5=3000208d539ec061b899bce1d9ce9404
 
 SRC_URI = "git://github.com/wmww/gtk-layer-shell;protocol=https"
 
+ERROR_QA_remove = "unknown-configure-option"
 
 SRCREV = "3b3b935b1643eb58e6cf5a9432b4470d568bfbc2"
 UPSTREAM_CHECK_COMMITS = "1"

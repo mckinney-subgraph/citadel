@@ -1,0 +1,2 @@
+PACKAGECONFIG = "pango drm"
+
