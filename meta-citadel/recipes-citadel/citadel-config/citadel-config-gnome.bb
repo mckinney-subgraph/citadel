@@ -9,23 +9,28 @@ S = "${WORKDIR}"
 
 SRC_URI = "\
     file://gsettings/90_citadel.gschema.override \
-    file://dconf/build.d/initial-realm-dconf.conf \
+    file://dconf/build.d/realms.d/initial-realm-dconf.conf \
+    file://dconf/build.d/citadel.d/citadel-dconf.conf \
 "
 
 inherit allarch gsettings
 
-# Build the binary dconf database which is installed by default into each new realm
 do_compile() {
     mkdir -p ${WORKDIR}/dconf-output
-    dconf compile ${WORKDIR}/dconf-output/user ${S}/dconf/build.d
+    # Build the binary dconf database which is installed by default into each new realm
+    dconf compile ${WORKDIR}/dconf-output/user ${S}/dconf/build.d/realms.d/
+    # Build the binary dconf database which is installed by default into /home/citadel
+    dconf compile ${WORKDIR}/dconf-output/citadel ${S}/dconf/build.d/citadel.d/
 }
 
 do_install() {
     install -d ${D}${datadir}/glib-2.0/schemas
     install -d ${D}${sysconfdir}/skel/.config/dconf
+    install -m 0755 -d ${D}${datadir}/factory/storage/citadel-state/citadel-dconf
 
     install -m 644 ${S}/gsettings/90_citadel.gschema.override ${D}${datadir}/glib-2.0/schemas
     install -m 644 ${WORKDIR}/dconf-output/user ${D}${sysconfdir}/skel/.config/dconf
+    install -m 644 ${WORKDIR}/dconf-output/citadel ${D}${datadir}/factory/storage/citadel-state/citadel-dconf/user
 }
 
 FILES_${PN} = "/"

@@ -53,7 +53,7 @@ The apt source lines use the special Apt-Cacher NG syntax.
 [code]
   /etc/apt/sources.list
 
-  deb http://HTTPS///deb.debian.org/debian buster main contrib non-free
+  deb http://HTTPS///deb.debian.org/debian bullseye main contrib non-free
 
 Using a package cache avoids downloading and storing packages multiple times
 when updating multiple RealmFS images. It also makes it possible to download and

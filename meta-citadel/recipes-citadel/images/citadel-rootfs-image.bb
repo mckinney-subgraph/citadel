@@ -32,10 +32,6 @@ set_disable_root_password() {
 
 setup_var() {
     install -m 0755 -d ${IMAGE_ROOTFS}/usr/share/factory/var
-    install -m 0755 -d ${IMAGE_ROOTFS}/usr/share/factory/home
-
-    install -m 0755 -d ${IMAGE_ROOTFS}/home/citadel/.local/share/applications
-    chown -R 1000:1000 ${IMAGE_ROOTFS}/home/citadel/.local
 
     rmdir ${IMAGE_ROOTFS}/var/log/journal
 
@@ -45,12 +41,6 @@ setup_var() {
     mv ${IMAGE_ROOTFS}/var/spool ${IMAGE_ROOTFS}/usr/share/factory/var
     mv ${IMAGE_ROOTFS}/var/run ${IMAGE_ROOTFS}/usr/share/factory/var
     mv ${IMAGE_ROOTFS}/var/lock ${IMAGE_ROOTFS}/usr/share/factory/var
-
-    cp -r ${IMAGE_ROOTFS}/usr/share/factory/skel/.??* ${IMAGE_ROOTFS}/home/citadel
-    cp -r ${IMAGE_ROOTFS}/usr/share/factory/skel/.??* ${IMAGE_ROOTFS}/home/root
-    mv ${IMAGE_ROOTFS}/home/citadel ${IMAGE_ROOTFS}/usr/share/factory/home
-    mv ${IMAGE_ROOTFS}/home/root ${IMAGE_ROOTFS}/usr/share/factory/home
-
 
     ln -sf /opt/share/icons/Paper ${IMAGE_ROOTFS}/usr/share/icons/Paper
     ln -sf /opt/share/icons/Adwaita ${IMAGE_ROOTFS}/usr/share/icons/Adwaita

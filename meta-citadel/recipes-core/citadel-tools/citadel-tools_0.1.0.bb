@@ -7,7 +7,7 @@ inherit cargo systemd
 #
 # Update this when changes are pushed to github
 #
-SRCREV = "ee7d0ef16655fbd518f84e220b081d9f4e86da85"
+SRCREV = "f665490a4d8bce26c2b70fba94731c60c581ddbd"
 
 GIT_URI = "git://github.com/brl/citadel-tools.git;protocol=https"
 
@@ -227,26 +227,26 @@ do_install() {
     install -d ${D}${systemd_system_unitdir}
 
     # Services desktop sync
-    install -m 644 ${B}/systemd/citadel-desktop-watcher.path ${D}${systemd_system_unitdir}
-    install -m 644 ${B}/systemd/citadel-desktop-watcher.service ${D}${systemd_system_unitdir}
-    install -m 644 ${B}/systemd/citadel-current-watcher.path ${D}${systemd_system_unitdir}
-    install -m 644 ${B}/systemd/citadel-current-watcher.service ${D}${systemd_system_unitdir}
+    install -m 644 ${S}/systemd/citadel-desktop-watcher.path ${D}${systemd_system_unitdir}
+    install -m 644 ${S}/systemd/citadel-desktop-watcher.service ${D}${systemd_system_unitdir}
+    install -m 644 ${S}/systemd/citadel-current-watcher.path ${D}${systemd_system_unitdir}
+    install -m 644 ${S}/systemd/citadel-current-watcher.service ${D}${systemd_system_unitdir}
 
     # Unit to run: citadel-boot boot-automount
-    install -m 644 ${B}/systemd/citadel-boot-automount.service ${D}${systemd_system_unitdir}
+    install -m 644 ${S}/systemd/citadel-boot-automount.service ${D}${systemd_system_unitdir}
 
     # realmsd
-    install -m 644 ${B}/data/citadel-realmsd.service ${D}${systemd_system_unitdir}
+    install -m 644 ${S}/data/citadel-realmsd.service ${D}${systemd_system_unitdir}
     install -m 755 -T ${TARGET_BIN}/realmsd ${D}${libexecdir}/citadel-realmsd
     install -d ${D}${sysconfdir}/dbus-1/system.d
-    install -m 644 ${B}/data/com.subgraph.realms.Manager.conf ${D}${sysconfdir}/dbus-1/system.d
+    install -m 644 ${S}/data/com.subgraph.realms.Manager.conf ${D}${sysconfdir}/dbus-1/system.d
 
     # citadel-realms-ui
     install -m 755 ${TARGET_BIN}/citadel-realms-ui ${D}${libexecdir}
 
     # citadel-installer-ui
     install -m 755 ${TARGET_BIN}/citadel-installer-ui ${D}${libexecdir}
-    install -m 644 ${B}/data/com.subgraph.installer.Manager.conf ${D}${sysconfdir}/dbus-1/system.d
+    install -m 644 ${S}/data/com.subgraph.installer.Manager.conf ${D}${sysconfdir}/dbus-1/system.d
 
     # /usr/libexec/citadel-tool
     install -m 755 ${TARGET_BIN}/citadel-tool ${D}${libexecdir}

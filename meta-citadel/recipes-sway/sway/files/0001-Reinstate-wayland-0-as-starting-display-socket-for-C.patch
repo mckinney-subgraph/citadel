@@ -1,0 +1,25 @@
+From 6970d4c08014a782a90513ef5ab99c10d9937dd1 Mon Sep 17 00:00:00 2001
+From: David McKinney <mckinney@subgraph.com>
+Date: Fri, 12 Feb 2021 13:49:22 +0000
+Subject: [PATCH] Reinstate wayland-0 as starting display socket for Citadel
+
+---
+ sway/server.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sway/server.c b/sway/server.c
+index 5de73b39..095389d3 100644
+--- a/sway/server.c
++++ b/sway/server.c
+@@ -152,9 +152,9 @@ bool server_init(struct sway_server *server) {
+ 	wlr_primary_selection_v1_device_manager_create(server->wl_display);
+ 	wlr_viewporter_create(server->wl_display);
+ 
+-	// Avoid using "wayland-0" as display socket
++	// Undo: Avoid using "wayland-0" as display socket
+ 	char name_candidate[16];
+-	for (int i = 1; i <= 32; ++i) {
++	for (int i = 0; i <= 32; ++i) {
+ 		sprintf(name_candidate, "wayland-%d", i);
+ 		if (wl_display_add_socket(server->wl_display, name_candidate) >= 0) {
+ 			server->socket = strdup(name_candidate);

@@ -2,4 +2,4 @@
 Description=Wait for creation of /run/user/1000/pulse/native
 
 [Path]
-PathExists=/run/user/1000/pulse/native
+PathChanged=/run/user/1000/pulse/native

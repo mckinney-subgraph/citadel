@@ -3,7 +3,7 @@ HOMEPAGE = ""
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 SECTION = ""
-DEPENDS = "mtools-native syslinux-native dosfstools-native coreutils-native parted-native"
+DEPENDS = "mtools-native syslinux syslinux-native dosfstools-native coreutils-native parted-native"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
@@ -47,7 +47,7 @@ install_syslinux_files() {
     install -d ${IMAGE_ROOTFS}/syslinux
     make_syslinux_conf > ${IMAGE_ROOTFS}/syslinux/syslinux.cfg
     for m in ${SYSLINUX_MODULES}; do
-        install ${RECIPE_SYSROOT_NATIVE}/usr/share/syslinux/$m ${IMAGE_ROOTFS}/syslinux
+        install ${RECIPE_SYSROOT}/usr/share/syslinux/$m ${IMAGE_ROOTFS}/syslinux
     done
 }
 
@@ -170,7 +170,7 @@ write_installer_image() {
     bbdebug 1 dd if=${BOOT_IMAGE} of=${INSTALLER_IMAGE} seek=${offset} count=${BOOT_IMAGE_SECTORS} conv=sparse,nocreat,notrunc
     dd if=${BOOT_IMAGE} of=${INSTALLER_IMAGE} seek=${offset} count=${BOOT_IMAGE_SECTORS} conv=sparse,nocreat,notrunc
 
-    dd bs=440 count=1 conv=notrunc if=${RECIPE_SYSROOT_NATIVE}/usr/share/syslinux/mbr.bin of=${INSTALLER_IMAGE}
+    dd bs=440 count=1 conv=notrunc if=${RECIPE_SYSROOT}/usr/share/syslinux/mbr.bin of=${INSTALLER_IMAGE}
 
     parted -s ${INSTALLER_IMAGE} unit s print
 }

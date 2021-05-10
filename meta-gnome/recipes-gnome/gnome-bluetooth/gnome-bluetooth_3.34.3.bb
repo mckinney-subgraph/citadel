@@ -10,7 +10,7 @@ SRC_URI[archive.sha256sum] = "0a068e3bddbbdab46991521e6624098579abe80da242398bdd
 
 DEPENDS = "glib-2.0 glib-2.0-native gtk+3 libcanberra libnotify libxml2-native gobject-introspection"
 
-WARN_QA_remove = "unknown-configure-option"
+ERROR_QA_remove = "unknown-configure-option"
 
 GNOMEBASEBUILDCLASS = "meson"
 inherit gnomebase gobject-introspection gettext

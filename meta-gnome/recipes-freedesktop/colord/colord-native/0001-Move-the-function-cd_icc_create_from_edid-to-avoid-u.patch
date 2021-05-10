@@ -1,7 +1,12 @@
-From cbb8f5c05fce1d56ae2e5fa9f57fc49c47bed5ab Mon Sep 17 00:00:00 2001
+From e11dedcf3dc5514f4116e861a19d321dd802c0cd Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Andreas=20M=C3=BCller?= <schnitzeltony@gmail.com>
 Date: Sun, 12 May 2019 21:58:02 +0200
 Subject: [PATCH] Move the function cd_icc_create_from_edid to avoid udev
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+From: =?UTF-8?q?Andreas=20M=C3=BCller?= <schnitzeltony@gmail.com>
  dependeny
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -12,6 +17,7 @@ We do not have udev-native so it is a dependeny we cannot satisfy
 Upstream-Status: Inappropriate [OE specific]
 
 Signed-off-by: Andreas Müller <schnitzeltony@gmail.com>
+
 ---
  lib/colord/cd-edid.c | 63 ++++++++++++++++++++++++++++++++++++++++++++
  lib/colord/cd-icc.c  | 62 -------------------------------------------
@@ -89,11 +95,11 @@ index a5e2328..dec509a 100644
 +}
 +
 diff --git a/lib/colord/cd-icc.c b/lib/colord/cd-icc.c
-index f231814..2c8fe77 100644
+index 8beec43..398ff7a 100644
 --- a/lib/colord/cd-icc.c
 +++ b/lib/colord/cd-icc.c
-@@ -3094,68 +3094,6 @@ out:
- 	return ret;
+@@ -3114,68 +3114,6 @@ cd_icc_create_default (CdIcc *icc, GError **error)
+ 	return cd_icc_create_default_full (icc, CD_ICC_LOAD_FLAGS_NONE, error);
  }
  
 -/**
@@ -161,6 +167,3 @@ index f231814..2c8fe77 100644
  /**
   * cd_icc_create_from_edid:
   * @icc: A valid #CdIcc
--- 
-2.20.1
-

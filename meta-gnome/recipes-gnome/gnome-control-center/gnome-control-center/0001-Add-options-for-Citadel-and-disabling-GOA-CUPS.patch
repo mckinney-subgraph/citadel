@@ -1,4 +1,4 @@
-From 960f785681afa6c5ca835159172a4d0783ae5707 Mon Sep 17 00:00:00 2001
+From 379b93699b428ccb49f0d48ed1366a67f9ab5ffc Mon Sep 17 00:00:00 2001
 From: Bruce Leidl <bruce@subgraph.com>
 Date: Tue, 27 Oct 2020 16:43:34 -0400
 Subject: [PATCH] Add options for Citadel and disabling GOA/CUPS
@@ -15,7 +15,7 @@ Subject: [PATCH] Add options for Citadel and disabling GOA/CUPS
  8 files changed, 107 insertions(+), 16 deletions(-)
 
 diff --git a/meson.build b/meson.build
-index 48044cc..8493433 100644
+index 9002169..a2106f6 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -114,6 +114,15 @@ if not libhandy_dep.found()
@@ -36,7 +36,7 @@ index 48044cc..8493433 100644
  
 @@ -124,7 +133,9 @@ gio_dep = dependency('gio-2.0')
  glib_dep = dependency('glib-2.0', version: '>= 2.56.0')
- gnome_desktop_dep = dependency('gnome-desktop-3.0', version: '>= 3.27.90')
+ gnome_desktop_dep = dependency('gnome-desktop-3.0', version: '>= 3.33.4')
  gnome_settings_dep = dependency('gnome-settings-daemon', version: '>= 3.27.90')
 +if enable_goa
  goa_dep = dependency('goa-1.0', version: goa_req_version)
@@ -297,10 +297,10 @@ index 2f4fdc5..82f54bd 100644
  panels_libs = []
  foreach cappletname: panels
 diff --git a/shell/cc-panel-list.c b/shell/cc-panel-list.c
-index d425067..bb79e38 100644
+index e23da0b..b6aacfb 100644
 --- a/shell/cc-panel-list.c
 +++ b/shell/cc-panel-list.c
-@@ -392,11 +392,16 @@ static const gchar * const panel_order[] = {
+@@ -386,11 +386,16 @@ static const gchar * const panel_order[] = {
    "background",
    "notifications",
    "search",
@@ -318,7 +318,7 @@ index d425067..bb79e38 100644
    /* Privacy page */
    "location",
    "camera",
-@@ -412,16 +417,24 @@ static const gchar * const panel_order[] = {
+@@ -406,16 +411,24 @@ static const gchar * const panel_order[] = {
    "display",
    "mouse",
    "keyboard",

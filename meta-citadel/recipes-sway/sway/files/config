@@ -7,29 +7,34 @@
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
+#
 set $mod Mod4
 
+#
 # Home row direction keys, like vim
+#
 set $left h
 set $down j
 set $up k
 set $right l
 
-# Your preferred terminal emulator - script command to appease pty requirement of machinectl
-set $term /usr/libexec/citadel-run gnome-terminal
-set $citadelterm gnome-terminal
-set $filemanager /usr/libexec/citadel-run nautilus
-set $lockscreen swaylock --scaling=fill -i /usr/share/backgrounds/gnome/adwaita-morning.jpg
-set $screenshot grim /storage/realms/Shared/`date +'%Y-%m-%d-%H%M%S_screenshot.png'`
-set $screenshot_region slurp | grim -g - /home/citadel/`date +'%Y-%m-%d-%H%M%S_screenshot.png'`
+#
+# Commands 
+#
+set $term /usr/libexec/citadel-run /usr/bin/x-terminal-emulator
+set $citadelterm /usr/bin/gnome-terminal --app-id org.gnome.TerminalCitadel --title "Citadel"
+set $lockscreen /usr/bin/swaylock --scaling=fill -i /usr/share/backgrounds/gnome/adwaita-morning.jpg
+set $screenshot /usr/bin/grim `/usr/bin/mktemp -u /storage/realms/Shared/$(/usr/bin/date +"%Y-%m-%d_%T_XXXXXX_screenshot.png")`
+set $screenshot_region /usr/bin/grim -g "$(/usr/bin/slurp -d)" `/usr/bin/mktemp -u /storage/realms/Shared/$(/usr/bin/date +"%Y-%m-%d_%T_XXXXXX_screenshot.png")`
 
-# Your preferred application launcher
-set $menu /usr/bin/sgflow
+set $menu /usr/bin/sgmenu
+set $realmsui /usr/libexec/citadel-realms-ui
 
 ### Output configuration
 #
 # Default wallpaper 
-output * bg /usr/share/backgrounds/gnome/adwaita-night.jpg fill
+#
+output * bg #2e3440 solid_color
 
 #
 # Example configuration:
@@ -56,26 +61,23 @@ output * bg /usr/share/backgrounds/gnome/adwaita-night.jpg fill
 #
 # Basics:
 #
-# start a terminal
 bindsym $mod+Return exec $term
 bindsym $mod+Shift+Return exec $citadelterm
-
-# start file manager
-bindsym $mod+n exec $filemanager
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start your launcher
 bindsym $mod+d exec $menu
+bindsym $mod+Shift+d exec $realmsui
 
 # lock screen 
-bindsym $mod+9 exec $lockscreen
+bindsym $mod+Shift+Escape exec $lockscreen
 
 # volume
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioRaiseVolume exec /usr/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec /usr/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec /usr/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle
 
 # screenshots
 bindsym $mod+Print exec $screenshot
@@ -125,6 +127,9 @@ bindsym $mod+5 workspace 5
 bindsym $mod+6 workspace 6
 bindsym $mod+7 workspace 7
 bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace 1
 bindsym $mod+Shift+2 move container to workspace 2
@@ -134,8 +139,8 @@ bindsym $mod+Shift+5 move container to workspace 5
 bindsym $mod+Shift+6 move container to workspace 6
 bindsym $mod+Shift+7 move container to workspace 7
 bindsym $mod+Shift+8 move container to workspace 8
-# Note: workspaces can have any name you want, not just numbers.
-# We just use 1-8 as the default.
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
 
 #
 # Layout stuff:
@@ -205,24 +210,64 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 #
+# Passthrough mode for nested sessions:
+#
+mode passthrough {
+bindsym $mod+f12 mode default
+}
+bindsym $mod+f12 mode passthrough
+
+#
 # Borders:
 #
-default_border pixel 1
-default_floating_border normal
+default_border pixel 3
+default_floating_border pixel 3
 
 #
 # Gaps:
 #
 gaps inner 10
-gaps outer 4
+gaps outer 5 
 smart_gaps on
+smart_borders on
+
+#
+# Titlebar (hide in stacking/tabbed modes):
+#
+titlebar_border_thickness 0
+titlebar_padding 0 0
+
+#
+# Client styles:
+set $nord0   #2e3440
+set $nord1   #3b4252
+set $nord2   #434c5e
+set $nord3   #4c566a
+set $nord4   #d8dee9
+set $nord5   #e5e9f0
+set $nord6   #eceff4
+set $nord7   #8fbcbb
+set $nord8   #88c0d0
+set $nord9   #81a1c1
+set $nord10  #5e81ac
+set $nord11  #bf616a
+set $nord12  #d08770
+set $nord13  #ebcb8b
+set $nord14  #a3be8c
+set $nord15  #b48ead
+
+# class                 border bg     text   indic  child_border
+client.focused 		$nord6 $nord3 $nord5 $nord2 $nord2
+client.focused_inactive $nord1 $nord1 $nord1 $nord1 $nord1 
+client.unfocused 	$nord0 $nord1 $nord3 $nord1 $nord0
+client.urgent 		$nord2 $nord2 $nord6 $nord2 $nord2
+client.placeholder     	$nord0 $nord0 $nord6 $nord0 $nord0
 
 #
 # Startup Commands:
 #
 exec /usr/libexec/polkit-gnome-authentication-agent-1
 exec systemctl --user restart pulseaudio.service
-exec /usr/bin/start-pulseaudio-x11
 exec /usr/libexec/gsd-power
 exec /usr/libexec/gsd-sound
 exec /usr/libexec/gsd-xsettings
@@ -233,16 +278,12 @@ exec /usr/libexec/gsd-xsettings
 # Read `man 5 sway-bar` for more information about this section.
 bar {
     position bottom
+    status_command while /usr/bin/date +'%Y-%m-%d %l:%M %p'; do /usr/bin/sleep 60; done
     colors {
-        statusline #ffffff
-        background #00000000
-        inactive_workspace #32323200 #32323200 #5c5c5c
+        statusline $nord4
+        background $nord1
+	focused_workspace  $nord4 $nord3 $nord4
+        inactive_workspace $nord1 $nord1 $nord3
     }
-    # Disabling until tray works in Sway 1.0
-    #status_command /usr/libexec/sgstatus
-    # Disabling until tray works in Sway 1.0
-    #icon_theme Paper
 }
-
-include /etc/sway/config.d/*
 

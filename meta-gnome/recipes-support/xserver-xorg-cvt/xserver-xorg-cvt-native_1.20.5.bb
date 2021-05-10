@@ -14,7 +14,7 @@ SRC_URI[sha256sum] = "a81d8243f37e75a03d4f8c55f96d0bc25802be6ec45c3bfa5cb614c6d0
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 B = "${WORKDIR}/build"
 
-inherit native pkgconfig
+inherit pkgconfig native
 
 do_configure[noexec] = "1"
 

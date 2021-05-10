@@ -5,8 +5,8 @@ LIC_FILES_CHKSUM = "file://LICENSE.md;md5=e6faad78a557b22780e4cf62c89976f8"
 SECTION = ""
 DEPENDS = ""
 
-SRC_URI = "git://github.com/danielwe/base16-vim;protocol=https"
-SRCREV = "a40a4514ce82619e32028d39966a2fa61ebbf7e4"
+SRC_URI = "git://github.com/chriskempson/base16-vim;protocol=https"
+SRCREV = "6191622d5806d4448fa2285047936bdcee57a098"
 
 FILES_${PN} = "${datadir}/vim/colors"
 S = "${WORKDIR}/git"
